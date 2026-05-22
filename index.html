@@ -5,34 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>System Override</title>
   
-  <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Link to external CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-sylus-bg">
 
+  <div id="crows-container"></div>
+  
   <div class="particles"></div>
 
-  <!-- THE MASTER TRANSPARENT BOX -->
-  <div id="master-frame" class="master-frame theme-sylus">
-    <div class="content-area">
-      
-      <!-- Phase 1A: Sylus Bait -->
-      <div id="phase-sylus" class="phase active">
-        <h1 class="sylus-title">Welcome,<br>Sweetheart.</h1>
-        <p class="sylus-subtitle">Did you really think I'd forget what today is?</p>
-      </div>
+  <div id="sylus-frame" class="glass-box red-glass">
+    <div class="shard shard-1"></div>
+    <div class="shard shard-2"></div>
+    <div class="shard shard-3"></div>
+    <div class="shard shard-4"></div>
 
-      <!-- Phase 1B: The Glitch -->
+    <div id="sylus-content" class="box-content active">
+      <h1 class="sylus-title">Welcome,<br>Sweetheart.</h1>
+      <p class="sylus-subtitle">Did you really think I'd forget what today is?</p>
+    </div>
+  </div>
+
+  <div id="caleb-frame" class="glass-box blue-glass hidden">
+    <div class="box-content">
+      
       <div id="phase-glitch" class="phase">
         <h1 class="terminal-text glitch-title">SYSTEM OVERRIDE</h1>
         <p class="terminal-text">Intercepting signal...</p>
         <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL DETECTED</p>
       </div>
 
-      <!-- Phase 1C: Caleb Takes Over -->
       <div id="phase-caleb" class="phase">
         <div class="tech-header">CONNECTION ESTABLISHED // CALEB</div>
         <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
@@ -40,7 +43,6 @@
         <button id="btn-proceed" class="action-btn">Proceed to Quarantine</button>
       </div>
 
-      <!-- Phase 2: The Firewalls (Mind Games) -->
       <div id="phase-firewall" class="phase">
         <div class="tech-header warning-header">QUARANTINE PROTOCOL ACTIVATED</div>
         <p class="caleb-text firewall-title">SECURITY FIREWALL 01</p>
@@ -54,15 +56,9 @@
         <button id="btn-submit" class="action-btn">Submit Validation</button>
       </div>
 
-      <!-- Phase 3 container (ready for next step) -->
-      <div id="phase-three" class="phase">
-        <!-- We will inject the fingerprint logic here next -->
-      </div>
-
     </div>
   </div>
 
-  <!-- Link to external JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
