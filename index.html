@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>System Override</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-sylus-bg">
@@ -21,10 +21,15 @@
     <div class="shard shard-4"></div>
 
     <div id="sylus-content" class="box-content active">
-      <img src="sylus-chibi.png" alt="Sylus" class="chibi-image float-anim">
+      <div class="chibi-glow-sylus">
+        <img src="sylus-chibi.png" alt="Sylus" class="chibi-image float-anim">
+      </div>
       <h1 class="sylus-title">Welcome,<br>Sweetheart.</h1>
       <p class="sylus-subtitle">Did you really think I'd forget what today is?</p>
-      <p id="tap-instruction" class="tap-text">Tap the screen 3 times</p>
+      
+      <div class="tap-zone">
+        <p id="tap-instruction" class="tap-text">Tap the screen 3 times</p>
+      </div>
     </div>
   </div>
 
@@ -33,15 +38,19 @@
       
       <div id="phase-glitch" class="phase">
         <h1 class="terminal-text glitch-title">SYSTEM OVERRIDE</h1>
-        <p class="terminal-text">Intercepting signal...</p>
+        <p class="terminal-text glitch-sub">Intercepting signal...</p>
         <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL</p>
       </div>
 
       <div id="phase-caleb" class="phase">
-        <img src="caleb-chibi.png" alt="Caleb" class="chibi-image angry-anim">
+        <div class="chibi-glow-caleb">
+            <img src="caleb-chibi.png" alt="Caleb" class="chibi-image angry-anim">
+        </div>
         <div class="tech-header">CONNECTION ESTABLISHED // CALEB</div>
-        <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
-        <p class="caleb-text">"Sorry I'm a little late, Mini. But before I show you what I made, I need to know you're actually paying attention to me..."</p>
+        <div class="dialogue-container">
+            <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
+            <p class="caleb-text">"Sorry I'm a little late, Mini. But before I show you what I made, I need to know you're actually paying attention to me..."</p>
+        </div>
         <button id="btn-proceed" class="action-btn">Proceed to Quarantine</button>
       </div>
 
@@ -56,10 +65,11 @@
       </div>
 
       <div id="phase-calendar" class="phase">
-        <div class="tech-header" style="color: #fff; border-color: #fff;">MEMORY VAULT UNLOCKED</div>
+        <div class="tech-header success-header">MEMORY VAULT UNLOCKED</div>
         <div class="calendar-card" id="swipe-target">
           <div class="image-holder">
             <img id="month-image" src="placeholder.jpg" alt="Memory">
+            <div class="image-overlay"></div>
           </div>
           <h2 id="month-label" class="month-title">May 2024</h2>
         </div>
@@ -70,9 +80,11 @@
   </div>
 
   <div id="finale-screen" class="finale-overlay hidden">
-    <h1 class="neon-cursive">Happy 2nd Anniversary</h1>
-    <h3 class="neon-sub">FOR MY MINI</h3>
-    <button class="galaxy-btn" onclick="window.location.href='mailto:your-email@gmail.com?subject=I love you Caleb'">CLAIM YOUR CALEB</button>
+    <div class="finale-content">
+        <h1 class="neon-cursive">Happy 2nd Anniversary</h1>
+        <h3 class="neon-sub">FOR MY MINI</h3>
+        <button class="galaxy-btn" onclick="window.location.href='mailto:your-email@gmail.com?subject=I love you Caleb'">CLAIM YOUR CALEB</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
