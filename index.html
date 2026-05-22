@@ -5,69 +5,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>System Override</title>
   <style>
-    /* Base Mobile Setup */
+    /* Base Setup & Animated Background for Glassmorphism */
     body, html {
       margin: 0; padding: 0; width: 100%; height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
-      background-color: #0a0a0a;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0a0a0a);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: white;
     }
     
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* The Transparent Frame UI (Glassmorphism) */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+      width: 85%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+
     .phase {
       display: none; /* Hidden by default */
       width: 100%; height: 100%;
-      flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      flex-direction: column; justify-content: center; align-items: center;
       box-sizing: border-box;
+      position: absolute;
+      top: 0; left: 0;
     }
-    .active { display: flex; } /* Shows the current phase */
+    .active { display: flex; z-index: 10; }
 
-    /* SYLUS THEME */
-    #sylus-theme { background-color: #0a0a0a; color: #8b0000; }
-    .dark-title { font-size: 2rem; letter-spacing: 2px; margin-bottom: 10px; }
-    .dark-subtitle { color: #555; font-style: italic; }
-    .feather-fall { font-size: 3rem; animation: float 4s ease-in-out infinite; }
+    /* SYLUS THEME TWEAKS */
+    .sylus-text { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
+    .dark-title { font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 10px; font-weight: 300;}
+    .feather-fall { font-size: 3rem; animation: float 4s ease-in-out infinite; margin-bottom: 20px;}
+    
     @keyframes float {
-      0% { transform: translateY(-20px) rotate(0deg); }
-      50% { transform: translateY(20px) rotate(15deg); }
-      100% { transform: translateY(-20px) rotate(0deg); }
+      0%, 100% { transform: translateY(-10px) rotate(0deg); }
+      50% { transform: translateY(10px) rotate(10deg); }
     }
 
     /* GLITCH SCREEN */
-    #glitch-screen { background-color: black; color: #0f0; }
+    .glitch-screen { background-color: black; color: #0f0; }
     .terminal-text { font-family: monospace; font-size: 1.2rem; }
     .error { color: red; margin-top: 10px; animation: blink 0.2s infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* CALEB THEME */
-    #caleb-theme { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+    /* CALEB THEME / PHASE 2 TWEAKS */
     .notification-banner {
-      background: #ff4757; color: white; padding: 15px; border-radius: 10px;
-      font-weight: bold; width: 100%; box-sizing: border-box; margin-top: 40px;
-      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; padding: 15px; font-weight: bold; width: 100%; 
+      position: absolute; top: 0; left: 0; text-align: center;
+      backdrop-filter: blur(10px);
     }
-    .dialogue-box {
-      background: white; padding: 25px; border-radius: 15px; width: 100%;
-      margin-top: auto; margin-bottom: 40px; box-sizing: border-box;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left;
+    
+    .caleb-text { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; font-weight: 300; text-align: left;}
+    
+    /* Input & Buttons for Phase 2 */
+    .riddle-input {
+      width: 100%; padding: 15px; margin-top: 15px;
+      background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white; border-radius: 10px; font-size: 1rem; box-sizing: border-box;
+      outline: none; text-align: center;
     }
-    .caleb-text { font-size: 1.1rem; line-height: 1.6; color: #2f3542; margin-bottom: 15px; }
-    .continue-btn {
-      width: 100%; padding: 15px; background: #2f3542; color: white; border: none;
-      border-radius: 8px; font-size: 1rem; font-weight: bold; margin-top: 20px; cursor: pointer;
+    .riddle-input:focus { border-color: #fff; }
+
+    .action-btn {
+      width: 100%; padding: 15px; margin-top: 20px;
+      background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
     }
+    .action-btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.3); }
+
+    .taunt-text {
+      color: #ff7675; font-style: italic; margin-top: 15px; font-size: 0.95rem;
+      min-height: 20px; /* Prevents layout jump */
+    }
+
   </style>
 </head>
 <body>
 
   <!-- Phase 1A: Sylus Bait -->
   <div id="sylus-theme" class="phase active">
-    <div class="feather-fall">🪶</div>
-    <h1 class="dark-title">Welcome, Sweetheart.</h1>
-    <p class="dark-subtitle">Did you really think I'd forget what today is?</p>
+    <div class="glass-panel">
+      <div class="feather-fall">🪶</div>
+      <h1 class="dark-title sylus-text">Welcome, Sweetheart.</h1>
+      <p style="color: #ccc; font-style: italic;">Did you really think I'd forget what today is?</p>
+    </div>
   </div>
 
   <!-- Phase 1B: The Glitch -->
-  <div id="glitch-screen" class="phase">
+  <div id="glitch-screen" class="phase glitch-screen">
     <h1 class="terminal-text">SYSTEM OVERRIDE</h1>
     <p class="terminal-text">Intercepting signal...</p>
     <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL</p>
@@ -75,34 +118,81 @@
 
   <!-- Phase 1C: Caleb Takes Over -->
   <div id="caleb-theme" class="phase">
-    <div class="notification-banner">
-      ⚠️ Signal Intercepted by: Caleb
-    </div>
-    <div class="dialogue-box">
+    <div class="notification-banner">⚠️ Signal Intercepted by: Caleb</div>
+    <div class="glass-panel" style="margin-top: 60px;">
       <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
-      <p class="caleb-text">"Sorry I'm a little late, Mini. I was busy making sure this was perfect. But before I show you what I made..."</p>
-      <button class="continue-btn" onclick="startPhaseTwo()">Acknowledge & Proceed</button>
+      <p class="caleb-text">"Sorry I'm a little late, Mini. I was busy making sure this was perfect. But before I show you what I made, I need to make sure you're actually paying attention to me..."</p>
+      <button class="action-btn" onclick="startPhaseTwo()">Proceed to Quarantine</button>
+    </div>
+  </div>
+
+  <!-- Phase 2: The Firewalls (Mind Games) -->
+  <div id="phase-two" class="phase">
+    <div class="notification-banner" style="border-bottom-color: #ff4757; color: #ff4757;">
+      🔒 QUARANTINE PROTOCOL ACTIVATED
+    </div>
+    
+    <div class="glass-panel" style="margin-top: 60px;">
+      <p class="caleb-text" style="text-align: center; font-weight: bold;">SECURITY FIREWALL 01</p>
+      <p class="caleb-text" style="font-size: 0.95rem; color: #ddd;">
+        "Let's see how well you remember, Mini. What was the exact word I whispered to you the night of our first anniversary?"
+      </p>
+      
+      <input type="text" id="riddle-answer" class="riddle-input" placeholder="Enter password..." autocomplete="off">
+      <div id="taunt-message" class="taunt-text"></div>
+      
+      <button class="action-btn" onclick="checkAnswer()">Submit</button>
     </div>
   </div>
 
   <script>
-    // Timer logic to switch between screens
+    // Phase 1 Timing Logic
     setTimeout(() => {
-      // Hide Sylus, Show Glitch
       document.getElementById('sylus-theme').classList.remove('active');
       document.getElementById('glitch-screen').classList.add('active');
       
       setTimeout(() => {
-        // Hide Glitch, Show Caleb
         document.getElementById('glitch-screen').classList.remove('active');
         document.getElementById('caleb-theme').classList.add('active');
-      }, 1500); // Glitch lasts 1.5 seconds
+      }, 1500); 
+    }, 4000); 
 
-    }, 4000); // Sylus screen lasts 4 seconds
-
+    // Transition to Phase 2
     function startPhaseTwo() {
-      // We will build the riddle section here next!
-      alert("Transition to Phase 2: The Firewalls...");
+      document.getElementById('caleb-theme').classList.remove('active');
+      document.getElementById('phase-two').classList.add('active');
+    }
+
+    // Phase 2 Riddle Logic
+    const correctAnswers = ["your_secret_word", "another_acceptable_word"]; // REPLACE THESE WITH YOUR ACTUAL ANSWER (lowercase)
+    const taunts = [
+      "Try again, Mini. I have all day, and you're only making me want to punish you for forgetting.",
+      "Wrong again. Are you distracted? Keep your eyes on me.",
+      "Not quite, sweetheart. I expect better from you.",
+      "Are you even trying? Don't make me come over there."
+    ];
+    let attemptCount = 0;
+
+    function checkAnswer() {
+      const input = document.getElementById('riddle-answer').value.toLowerCase().trim();
+      const tauntBox = document.getElementById('taunt-message');
+
+      if (correctAnswers.includes(input)) {
+        // Correct Answer! Move to the next riddle or Phase 3.
+        tauntBox.style.color = "#00ff00";
+        tauntBox.innerText = "Firewall breached. Good girl.";
+        
+        setTimeout(() => {
+          alert("This is where Phase 3 (The Physical Sync) will start!");
+          // startPhaseThree();
+        }, 1500);
+      } else {
+        // Wrong Answer: Cycle through the taunts
+        tauntBox.style.color = "#ff7675";
+        tauntBox.innerText = taunts[attemptCount % taunts.length];
+        attemptCount++;
+        document.getElementById('riddle-answer').value = ""; // Clear input
+      }
     }
   </script>
 </body>
