@@ -1,44 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
   
   // Elements
-  const phaseSylus = document.getElementById('phase-sylus');
+  const body = document.body;
+  const sylusFrame = document.getElementById('sylus-frame');
+  const calebFrame = document.getElementById('caleb-frame');
+  const crowsContainer = document.getElementById('crows-container');
+  
   const phaseGlitch = document.getElementById('phase-glitch');
   const phaseCaleb = document.getElementById('phase-caleb');
   const phaseFirewall = document.getElementById('phase-firewall');
-  const masterFrame = document.getElementById('master-frame');
   
   const btnProceed = document.getElementById('btn-proceed');
   const btnSubmit = document.getElementById('btn-submit');
   const riddleInput = document.getElementById('riddle-answer');
   const tauntBox = document.getElementById('taunt-message');
 
-  // Phase 1 Timing Logic (Sylus -> Glitch -> Caleb)
+  // --- 1. SPAWN CROWS ---
+  function spawnCrows() {
+    for (let i = 0; i < 6; i++) {
+      let crow = document.createElement('div');
+      crow.classList.add('crow');
+      // Randomize height and delay so they fly across naturally
+      crow.style.top = Math.random() * 80 + 'vh';
+      crow.style.animationDuration = (Math.random() * 3 + 5) + 's'; // 5 to 8 seconds
+      crow.style.animationDelay = (Math.random() * 2) + 's';
+      crowsContainer.appendChild(crow);
+    }
+  }
+  spawnCrows();
+
+  // --- 2. TIMING & SHATTER LOGIC ---
   setTimeout(() => {
-    phaseSylus.classList.remove('active');
+    // 1. Shatter the Sylus Glass
+    sylusFrame.classList.add('shattering');
+    
+    // 2. Change Background to Caleb Deep Blue
+    body.classList.remove('theme-sylus-bg');
+    body.classList.add('theme-caleb-bg');
+
+    // 3. Reveal Caleb's Inner Frame (Glitch Phase starts instantly)
+    calebFrame.classList.remove('hidden');
+    calebFrame.classList.add('active-frame');
     phaseGlitch.classList.add('active');
     
-    // Switch to heavy Glitch Green glow
-    masterFrame.classList.remove('theme-sylus');
-    masterFrame.classList.add('theme-glitch'); 
-    
+    // 4. Clean up crows and shattered glass so they don't block taps
+    setTimeout(() => {
+      sylusFrame.style.display = 'none';
+      crowsContainer.style.display = 'none';
+    }, 1500);
+
+    // 5. End Glitch, reveal Caleb text
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseCaleb.classList.add('active');
-      
-      // Switch to Caleb Blue glow
-      masterFrame.classList.remove('theme-glitch');
-      masterFrame.classList.add('theme-caleb');
     }, 1800); 
-  }, 4500);
 
-  // Proceed Button Logic
+  }, 4500); // 4.5 seconds of Sylus bait
+
+  // --- 3. PROCEED BUTTON ---
   btnProceed.addEventListener('click', () => {
     phaseCaleb.classList.remove('active');
     phaseFirewall.classList.add('active');
   });
 
-  // Riddle Logic
-  const correctAnswers = ["your_secret_word"]; // Replace this with the actual word!
+  // --- 4. FIREWALL RIDDLE LOGIC ---
+  const correctAnswers = ["your_secret_word"]; // Replace with the actual answer
   const taunts = [
     "Try again, Mini. I have all day, and you're only making me want to punish you for forgetting.",
     "Wrong again. Are you distracted? Keep your eyes on me.",
@@ -53,10 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
       tauntBox.style.color = "#00ff41";
       tauntBox.innerText = "Firewall breached. Good girl.";
       
-      // Trigger Phase 3 transition
       setTimeout(() => {
         alert("Transitioning to Phase 3: Physical Sync...");
-        // startPhaseThree(); 
+        // Here is where we drop the screen hold logic next!
       }, 1500);
     } else {
       tauntBox.style.color = "#ff4d4d";
