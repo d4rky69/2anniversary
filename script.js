@@ -17,19 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
     phaseSylus.classList.remove('active');
     phaseGlitch.classList.add('active');
     
-    // Change border to glitch green
-    masterFrame.classList.remove('border-sylus');
-    masterFrame.style.borderColor = "#00ff41"; 
+    // Switch to heavy Glitch Green glow
+    masterFrame.classList.remove('theme-sylus');
+    masterFrame.classList.add('theme-glitch'); 
     
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseCaleb.classList.add('active');
       
-      // Change border to Caleb blue
-      masterFrame.style.borderColor = "";
-      masterFrame.classList.add('border-caleb');
+      // Switch to Caleb Blue glow
+      masterFrame.classList.remove('theme-glitch');
+      masterFrame.classList.add('theme-caleb');
     }, 1800); 
-  }, 4500); 
+  }, 4500);
 
   // Proceed Button Logic
   btnProceed.addEventListener('click', () => {
