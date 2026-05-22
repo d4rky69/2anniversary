@@ -1,168 +1,141 @@
-/* Animated Aurora Background (So the glass has something to refract) */
+/* Dynamic Backgrounds */
 body, html {
   margin: 0; padding: 0; width: 100%; height: 100%;
-  background: linear-gradient(-45deg, #090a0f, #150f1a, #0a1118, #050508);
-  background-size: 400% 400%;
-  animation: ambientDrift 15s ease infinite;
   font-family: 'Inter', sans-serif;
   display: flex; justify-content: center; align-items: center;
-  color: white; overflow: hidden;
+  overflow: hidden; color: white;
+  transition: background 1.5s ease;
 }
 
-@keyframes ambientDrift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+/* Sylus Dark Red Background */
+.theme-sylus-bg { background: radial-gradient(circle at center, #1a0505 0%, #050000 100%); }
+/* Caleb Deep Space Blue Background */
+.theme-caleb-bg { background: radial-gradient(circle at center, #0a1128 0%, #02050a 100%); }
 
-/* Floating Light Particles */
+/* Ambient Particles */
 .particles {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: 60px 60px; opacity: 0.4;
-  animation: drift 30s linear infinite;
+  position: absolute; width: 100%; height: 100%; z-index: 1;
+  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 50px 50px; opacity: 0.3; animation: drift 20s linear infinite;
 }
-@keyframes drift { 100% { background-position: 60px 60px; } }
+@keyframes drift { 100% { background-position: 50px 50px; } }
 
 /* =========================================
-   THE TRUE GLASSMORPHISM MASTER FRAME
+   CROWS ANIMATION
    ========================================= */
-.master-frame {
+#crows-container { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
+.crow {
+  position: absolute; right: -10vw; width: 60px; height: 60px;
+  /* SVG Crow shape encoded */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%230a0000" stroke="%23ff3333" stroke-width="0.5" d="M22,14 C22,14 16,10 12,12 C8,10 2,14 2,14 C2,14 6,8 12,5 C18,8 22,14 22,14 Z"/></svg>');
+  background-repeat: no-repeat; background-position: center;
+  animation: fly linear forwards; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+}
+@keyframes fly {
+  0% { transform: translateX(0vw) translateY(0) scale(1); }
+  50% { transform: translateX(-60vw) translateY(-20px) scaleY(0.8); } /* Flap effect */
+  100% { transform: translateX(-120vw) translateY(10px) scale(1); }
+}
+
+/* =========================================
+   MASTER GLASS BOX ARCHITECTURE
+   ========================================= */
+.glass-box {
   width: 88%; max-width: 420px; height: 75vh; max-height: 700px;
-  /* The Glass Body: Highly transparent, brightened slightly */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
-  backdrop-filter: blur(25px) saturate(150%);
-  -webkit-backdrop-filter: blur(25px) saturate(150%);
-  
-  /* The Glass Edge: Crisp top/left borders and an inner highlight */
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  
-  position: relative; z-index: 10; overflow: hidden;
-  display: flex; flex-direction: column;
-  transition: box-shadow 0.8s ease, border-color 0.8s ease;
+  position: absolute; z-index: 10; border-radius: 20px;
+  display: flex; flex-direction: column; justify-content: center;
+  transition: all 0.5s ease;
 }
 
-/* THE SHINE EFFECT (Sweeps across the glass) */
-.master-frame::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -150%; width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transform: skewX(-25deg);
-  animation: glassShine 7s infinite;
-  pointer-events: none; z-index: 20;
+.box-content {
+  position: relative; z-index: 15; width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 30px; box-sizing: border-box; opacity: 0; transition: opacity 0.5s ease;
 }
-@keyframes glassShine {
-  0% { left: -150%; }
-  15% { left: 200%; }
-  100% { left: 200%; }
+.box-content.active { opacity: 1; }
+
+/* 1. SYLUS RED GLASS */
+.red-glass {
+  background: rgba(20, 0, 0, 0.45);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 0, 0, 0.2);
 }
 
-/* DYNAMIC CHARACTER GLOWS */
-.theme-sylus { 
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
-              0 0 40px rgba(255, 30, 30, 0.3), 
-              inset 0 0 20px rgba(255, 30, 30, 0.2); 
+/* 2. CALEB BLUISH-WHITE GLASS */
+.blue-glass {
+  background: linear-gradient(135deg, rgba(200, 230, 255, 0.1), rgba(200, 230, 255, 0.02));
+  backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(100, 200, 255, 0.2);
+  border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 30px rgba(100, 200, 255, 0.2), inset 0 2px 20px rgba(255,255,255,0.1);
+  transform: scale(0.9); /* Starts slightly smaller inside */
 }
-.theme-glitch {
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
-              0 0 50px rgba(0, 255, 65, 0.5), 
-              inset 0 0 30px rgba(0, 255, 65, 0.3);
-}
-.theme-caleb { 
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
-              0 0 40px rgba(64, 200, 255, 0.4), 
-              inset 0 0 20px rgba(64, 200, 255, 0.2); 
+.blue-glass.active-frame { transform: scale(1); opacity: 1; }
+.hidden { opacity: 0; pointer-events: none; }
+
+/* =========================================
+   THE SHATTER EFFECT
+   ========================================= */
+.shard {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(40, 0, 0, 0.5); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 50, 50, 0.5); border-radius: 5px;
+  opacity: 0; pointer-events: none; z-index: 11;
 }
 
-/* Content Area & Phase Transitions */
-.content-area {
-  flex: 1; display: flex; flex-direction: column; padding: 35px 25px; position: relative; z-index: 15;
-}
-.phase {
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  width: 100%; height: 100%; position: absolute; top: 0; left: 0; padding: 35px 25px;
-  box-sizing: border-box; opacity: 0; pointer-events: none;
-  transform: scale(0.95) translateY(10px);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.active { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
+/* When the javascript adds the "shattering" class */
+.shattering .box-content { opacity: 0; transition: opacity 0.1s; }
+.shattering.red-glass { background: transparent; border: none; backdrop-filter: none; box-shadow: none; }
+.shattering .shard { opacity: 1; }
 
-/* --- SYLUS AESTHETIC --- */
-.sylus-title {
-  font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3333;
-  text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-bottom: 15px; font-weight: 700; text-align: center;
-}
-.sylus-subtitle { font-family: 'Cinzel', serif; color: #d0d0d0; font-size: 1rem; font-style: italic; text-align: center;}
+.shattering .shard-1 { clip-path: polygon(0 0, 60% 0, 40% 50%, 0 40%); animation: shatter1 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
+.shattering .shard-2 { clip-path: polygon(60% 0, 100% 0, 100% 60%, 40% 50%); animation: shatter2 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
+.shattering .shard-3 { clip-path: polygon(100% 60%, 100% 100%, 30% 100%, 40% 50%); animation: shatter3 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
+.shattering .shard-4 { clip-path: polygon(0 40%, 40% 50%, 30% 100%, 0 100%); animation: shatter4 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
 
-/* --- GLITCH AESTHETIC --- */
-.terminal-text { font-family: monospace; font-size: 1.1rem; color: #00ff41; text-align: center; margin: 5px 0;}
-.glitch-title { font-size: 1.8rem; margin-bottom: 20px; text-shadow: 0 0 15px #00ff41; }
+@keyframes shatter1 { to { transform: translate(-80px, -80px) rotate(-25deg); opacity: 0; } }
+@keyframes shatter2 { to { transform: translate(80px, -60px) rotate(35deg); opacity: 0; } }
+@keyframes shatter3 { to { transform: translate(60px, 100px) rotate(-15deg); opacity: 0; } }
+@keyframes shatter4 { to { transform: translate(-60px, 80px) rotate(20deg); opacity: 0; } }
+
+/* =========================================
+   TEXT & PHASES AESTHETICS
+   ========================================= */
+.phase { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; padding: 30px; box-sizing: border-box; text-align: center; }
+.phase.active { display: flex; animation: fadeUp 0.6s ease forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.sylus-title { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3333; text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-bottom: 15px; }
+.sylus-subtitle { font-family: 'Cinzel', serif; color: #aaa; font-style: italic; }
+
+.terminal-text { font-family: monospace; font-size: 1.1rem; color: #00ff41; margin: 5px 0;}
+.glitch-title { font-size: 1.6rem; margin-bottom: 20px; text-shadow: 0 0 15px #00ff41; }
 .error { color: #ff003c; animation: blink 0.1s infinite; text-shadow: 0 0 10px #ff003c;}
 @keyframes blink { 50% { opacity: 0; } }
 
-/* --- CALEB/TECH AESTHETIC --- */
-.tech-header {
-  width: 100%; text-align: center; font-family: 'Rajdhani', sans-serif;
-  font-size: 1.1rem; color: #64c8ff; letter-spacing: 4px; font-weight: 700;
-  border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 15px;
-  margin-bottom: 30px; text-transform: uppercase; text-shadow: 0 0 10px rgba(100,200,255,0.4);
-}
+.tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 700; border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 15px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(100,200,255,0.4); width: 100%; }
 .warning-header { color: #ff4757; border-color: rgba(255,71,87,0.3); text-shadow: 0 0 10px rgba(255,71,87,0.4);}
+.caleb-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; font-weight: 300; color: #f0f0f0; text-align: left; width: 100%; }
+.firewall-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 5px; font-size: 1.1rem; letter-spacing: 1px;}
+.firewall-prompt { font-size: 0.95rem; margin-bottom: 20px; color: #ccc;}
 
-.caleb-text {
-  font-size: 1.05rem; line-height: 1.7; margin-bottom: 25px; font-weight: 300; 
-  color: #f0f0f0; text-align: left; width: 100%;
-}
-.firewall-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 10px; font-size: 1.2rem; letter-spacing: 2px;}
-.firewall-prompt { font-size: 0.95rem; text-align: center; margin-bottom: 25px; color: #ddd;}
-
-/* =========================================
-   PREMIUM GLASS INPUTS & BUTTONS
-   ========================================= */
+/* Inputs & Buttons */
 .riddle-input {
-  width: 100%; padding: 18px; margin-top: 10px;
-  background: rgba(0, 0, 0, 0.4); 
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px; font-size: 1rem; font-family: 'Inter', sans-serif;
-  color: white; outline: none; text-align: center; 
-  transition: all 0.3s ease;
-  box-shadow: inset 0 4px 15px rgba(0,0,0,0.5);
+  width: 100%; padding: 15px; margin-top: 10px; background: rgba(0, 0, 0, 0.4); 
+  border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; 
+  outline: none; text-align: center; transition: all 0.3s ease;
 }
-.riddle-input:focus { 
-  border-color: #64c8ff; 
-  background: rgba(100, 200, 255, 0.1); 
-  box-shadow: 0 0 15px rgba(100,200,255,0.2), inset 0 4px 15px rgba(0,0,0,0.5);
-}
+.riddle-input:focus { border-color: #64c8ff; background: rgba(100, 200, 255, 0.1); box-shadow: 0 0 15px rgba(100,200,255,0.2); }
 
 .action-btn {
-  width: 100%; padding: 18px; margin-top: auto;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-  color: white; 
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px; 
-  font-size: 1rem; font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer;
-  backdrop-filter: blur(10px); 
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  width: 100%; padding: 16px; margin-top: auto; background: rgba(255,255,255,0.1);
+  color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; 
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; 
+  cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s ease;
 }
-.action-btn:hover { 
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-  transform: translateY(-2px);
-  box-shadow: 0 15px 25px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.1);
-}
-.action-btn:active { transform: translateY(2px) scale(0.98); }
+.action-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
 
-.taunt-text {
-  color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.95rem;
-  min-height: 20px; font-family: 'Inter', sans-serif; font-weight: 400; text-align: center; width: 100%;
-  text-shadow: 0 0 10px rgba(255,71,87,0.3);
-}
+.taunt-text { color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.9rem; min-height: 20px; }
