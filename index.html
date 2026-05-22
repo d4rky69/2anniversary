@@ -6,13 +6,11 @@
   <title>System Override</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-sylus-bg">
 
   <div id="crows-container"></div>
-  
   <div class="particles"></div>
 
   <div id="sylus-frame" class="glass-box red-glass">
@@ -25,13 +23,12 @@
       <img src="sylus-chibi.png" alt="Sylus" class="chibi-image float-anim">
       <h1 class="sylus-title">Welcome,<br>Sweetheart.</h1>
       <p class="sylus-subtitle">Did you really think I'd forget what today is?</p>
-      
       <p id="tap-instruction" class="tap-text">Tap the screen 3 times</p>
     </div>
   </div>
 
   <div id="caleb-frame" class="glass-box blue-glass hidden">
-    <div class="box-content">
+    <div class="box-content active"> 
       
       <div id="phase-glitch" class="phase">
         <h1 class="terminal-text glitch-title">SYSTEM OVERRIDE</h1>
@@ -53,10 +50,8 @@
         <p class="caleb-text firewall-prompt">
           "Let's see how well you remember. What was the exact word I whispered to you the night of our first anniversary?"
         </p>
-        
         <input type="text" id="riddle-answer" class="riddle-input" placeholder="Enter password..." autocomplete="off">
         <div id="taunt-message" class="taunt-text"></div>
-        
         <button id="btn-submit" class="action-btn">Submit Validation</button>
       </div>
 
