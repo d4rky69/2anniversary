@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>System Override</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&family=Rajdhani:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-sylus-bg">
 
   <div id="crows-container"></div>
+  <div id="caleb-bg-elements" style="display: none;"></div>
   <div class="particles"></div>
 
   <div id="sylus-frame" class="glass-box red-glass">
@@ -33,29 +34,45 @@
       <div id="phase-glitch" class="phase">
         <h1 class="terminal-text glitch-title">SYSTEM OVERRIDE</h1>
         <p class="terminal-text">Intercepting signal...</p>
-        <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL DETECTED</p>
+        <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL</p>
       </div>
 
       <div id="phase-caleb" class="phase">
         <img src="caleb-chibi.png" alt="Caleb" class="chibi-image angry-anim">
         <div class="tech-header">CONNECTION ESTABLISHED // CALEB</div>
         <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
-        <p class="caleb-text">"Sorry I'm a little late, Mini. I was busy making sure this was perfect. But before I show you what I made, I need to know you're actually paying attention to me..."</p>
+        <p class="caleb-text">"Sorry I'm a little late, Mini. But before I show you what I made, I need to know you're actually paying attention to me..."</p>
         <button id="btn-proceed" class="action-btn">Proceed to Quarantine</button>
       </div>
 
       <div id="phase-firewall" class="phase">
-        <div class="tech-header warning-header">QUARANTINE PROTOCOL ACTIVATED</div>
-        <p class="caleb-text firewall-title">SECURITY FIREWALL 01</p>
-        <p class="caleb-text firewall-prompt">
-          "Let's see how well you remember. What was the exact word I whispered to you the night of our first anniversary?"
-        </p>
-        <input type="text" id="riddle-answer" class="riddle-input" placeholder="Enter password..." autocomplete="off">
+        <div class="tech-header warning-header">SECURITY PROTOCOL</div>
+        <p class="caleb-text firewall-title" id="quiz-progress">QUESTION 1 / 3</p>
+        <p class="caleb-text firewall-prompt" id="quiz-question">Loading...</p>
+        
+        <div class="quiz-options-container" id="quiz-options">
+          </div>
         <div id="taunt-message" class="taunt-text"></div>
-        <button id="btn-submit" class="action-btn">Submit Validation</button>
+      </div>
+
+      <div id="phase-calendar" class="phase">
+        <div class="tech-header" style="color: #fff; border-color: #fff;">MEMORY VAULT UNLOCKED</div>
+        <div class="calendar-card" id="swipe-target">
+          <div class="image-holder">
+            <img id="month-image" src="placeholder.jpg" alt="Memory">
+          </div>
+          <h2 id="month-label" class="month-title">May 2024</h2>
+        </div>
+        <p id="calendar-instruction" class="calendar-instruction">Tap to view our timeline</p>
       </div>
 
     </div>
+  </div>
+
+  <div id="finale-screen" class="finale-overlay hidden">
+    <h1 class="neon-cursive">Happy 2nd Anniversary</h1>
+    <h3 class="neon-sub">FOR MY MINI</h3>
+    <button class="galaxy-btn" onclick="window.location.href='mailto:your-email@gmail.com?subject=I love you Caleb'">CLAIM YOUR CALEB</button>
   </div>
 
   <script src="script.js"></script>
