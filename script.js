@@ -38,8 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       item.style.left = (Math.random() * 100) + 'vw';
       item.style.animationDuration = (Math.random() * 5 + 6) + 's';
       calebBgElements.appendChild(item);
-      
-      setTimeout(() => item.remove(), 12000); // cleanup
+      setTimeout(() => item.remove(), 12000);
     }, 1800);
   }
   spawnCrows();
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseCaleb.classList.add('active');
-    }, 2200); // Glitch lasts slightly longer for effect
+    }, 2200); 
   }
 
   btnProceed.addEventListener('click', () => {
@@ -86,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- 3. INTIMATE QUIZ LOGIC ---
-  // Option 1 (index 0) is ALWAYS the correct answer
   const quizData = [
     {
       q: "Where would I kiss you the most?",
@@ -151,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. 24-MONTH CALENDAR & SWIPE LOGIC ---
+  // --- 4. 3D FLIPPING TABLE CALENDAR LOGIC ---
   const months = [
     "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", 
     "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025",
@@ -160,70 +158,87 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   
   let currentMonthIndex = 0;
+  const calendarContainer = document.getElementById('calendar-container');
+  const calendarPage = document.getElementById('calendar-page');
   const monthLabel = document.getElementById('month-label');
   const monthImage = document.getElementById('month-image');
-  const swipeTarget = document.getElementById('swipe-target');
   const calInstruction = document.getElementById('calendar-instruction');
 
   function initCalendar() {
     updateCalendarUI();
+    enableCalendarSwipe();
   }
 
   function updateCalendarUI() {
     monthLabel.innerText = months[currentMonthIndex];
-    // Image fallback logic
     monthImage.src = `${currentMonthIndex}.jpg`; 
     monthImage.onerror = function() { this.src = 'placeholder.jpg'; };
 
     if (currentMonthIndex === months.length - 1) {
       calInstruction.innerText = "SWIPE UP TO UNLOCK THE PRESENT";
-      calInstruction.classList.add('swipe-anim');
-      enableSwipe();
     } else {
-      calInstruction.innerText = "Tap card for next month";
-      calInstruction.classList.remove('swipe-anim');
+      calInstruction.innerText = "Swipe up to turn the page";
     }
   }
 
-  swipeTarget.addEventListener('click', () => {
-    if (currentMonthIndex < months.length - 1) {
-      currentMonthIndex++;
-      swipeTarget.style.transform = 'scale(0.97)';
-      setTimeout(() => swipeTarget.style.transform = 'scale(1)', 150);
-      updateCalendarUI();
-    }
-  });
-
-  // Swipe Up Logic 
-  function enableSwipe() {
+  function enableCalendarSwipe() {
     let startY = 0;
-    swipeTarget.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
-    swipeTarget.addEventListener('touchend', e => {
+    let isFlipping = false;
+
+    // Touch Support for Mobile
+    calendarContainer.addEventListener('touchstart', e => { 
+      startY = e.touches[0].clientY; 
+    }, {passive: true});
+    
+    calendarContainer.addEventListener('touchend', e => {
+      if (isFlipping) return;
       let endY = e.changedTouches[0].clientY;
-      if (startY - endY > 40 && currentMonthIndex === months.length - 1) { 
-        triggerFinale();
-      }
+      if (startY - endY > 40) { handlePageTurn(); }
     });
 
-    // Mouse drag support
+    // Mouse Drag Support for Desktop
     let isDragging = false;
-    swipeTarget.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; });
-    swipeTarget.addEventListener('mouseup', e => {
-      if (!isDragging) return;
-      isDragging = false;
-      if (startY - e.clientY > 40 && currentMonthIndex === months.length - 1) {
-        triggerFinale();
-      }
+    calendarContainer.addEventListener('mousedown', e => { 
+      isDragging = true; startY = e.clientY; 
     });
+    calendarContainer.addEventListener('mouseup', e => {
+      if (!isDragging || isFlipping) return;
+      isDragging = false;
+      if (startY - e.clientY > 40) { handlePageTurn(); }
+    });
+
+    function handlePageTurn() {
+      if (currentMonthIndex === months.length - 1) {
+        triggerFinale();
+        return;
+      }
+
+      isFlipping = true;
+      
+      // 1. Trigger the Flip UP animation
+      calendarPage.classList.remove('turn-in');
+      calendarPage.classList.add('turn-out');
+      
+      setTimeout(() => {
+        // 2. Halfway through (when invisible), update the month content
+        currentMonthIndex++;
+        updateCalendarUI();
+        
+        // 3. Trigger the Flip DOWN animation
+        calendarPage.classList.remove('turn-out');
+        calendarPage.classList.add('turn-in');
+        
+        setTimeout(() => {
+          isFlipping = false;
+        }, 400); // Wait for turn-in to finish
+      }, 400); // Wait for turn-out to finish
+    }
   }
 
   function triggerFinale() {
     calebFrame.style.display = 'none'; 
     finaleScreen.classList.remove('hidden');
-    
-    setTimeout(() => {
-      finaleScreen.classList.add('active');
-    }, 50);
+    setTimeout(() => { finaleScreen.classList.add('active'); }, 50);
   }
 
 });
