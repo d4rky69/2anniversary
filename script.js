@@ -36,11 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
       item.classList.add(Math.random() > 0.5 ? 'plane' : 'apple');
       item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       item.style.left = (Math.random() * 100) + 'vw';
-      item.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      item.style.animationDuration = (Math.random() * 5 + 6) + 's';
       calebBgElements.appendChild(item);
       
-      setTimeout(() => item.remove(), 10000); // cleanup
-    }, 1500);
+      setTimeout(() => item.remove(), 12000); // cleanup
+    }, 1800);
   }
   spawnCrows();
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sylusFrame.addEventListener('click', () => {
     if (tapCount >= 3) return; 
     tapCount++;
-    sylusFrame.style.transform = 'scale(0.96)';
+    sylusFrame.style.transform = 'scale(0.95)';
     setTimeout(() => { sylusFrame.style.transform = 'scale(1)'; }, 150);
 
     if (tapCount === 1) { tapInstruction.innerText = "Tap 2 more times..."; } 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseCaleb.classList.add('active');
-    }, 1800); 
+    }, 2200); // Glitch lasts slightly longer for effect
   }
 
   btnProceed.addEventListener('click', () => {
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- 3. INTIMATE QUIZ LOGIC ---
-  // Option 1 (index 0) is ALWAYS the correct answer per your instructions.
+  // Option 1 (index 0) is ALWAYS the correct answer
   const quizData = [
     {
       q: "Where would I kiss you the most?",
@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadQuestion() {
     if (currentQ >= quizData.length) {
-      // Quiz Complete - Move to Calendar
       phaseFirewall.classList.remove('active');
       phaseCalendar.classList.add('active');
       initCalendar();
@@ -137,8 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function checkAnswer(selectedIndex) {
-    if (selectedIndex === 0) { // 0 is always correct
+    if (selectedIndex === 0) { 
       tauntBox.style.color = "#00ff41";
+      tauntBox.style.textShadow = "0 0 10px rgba(0,255,65,0.5)";
       tauntBox.innerText = "Good girl. Firewall breached.";
       setTimeout(() => {
         currentQ++;
@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 1200);
     } else {
       tauntBox.style.color = "#ff4d4d";
+      tauntBox.style.textShadow = "0 0 10px rgba(255,71,87,0.5)";
       tauntBox.innerText = taunts[Math.floor(Math.random() * taunts.length)];
     }
   }
@@ -170,10 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateCalendarUI() {
     monthLabel.innerText = months[currentMonthIndex];
-    // IMPORTANT: Name your images 0.jpg, 1.jpg, up to 24.jpg in your folder!
-    // For now, it will look for them. If not found, it shows the placeholder.
+    // Image fallback logic
     monthImage.src = `${currentMonthIndex}.jpg`; 
-    monthImage.onerror = function() { this.src = 'placeholder.jpg'; }; // Fallback
+    monthImage.onerror = function() { this.src = 'placeholder.jpg'; };
 
     if (currentMonthIndex === months.length - 1) {
       calInstruction.innerText = "SWIPE UP TO UNLOCK THE PRESENT";
@@ -185,44 +185,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Tap to progress months
   swipeTarget.addEventListener('click', () => {
     if (currentMonthIndex < months.length - 1) {
       currentMonthIndex++;
-      swipeTarget.style.transform = 'scale(0.95)';
+      swipeTarget.style.transform = 'scale(0.97)';
       setTimeout(() => swipeTarget.style.transform = 'scale(1)', 150);
       updateCalendarUI();
     }
   });
 
-  // Swipe Up Logic for the Final Month
+  // Swipe Up Logic 
   function enableSwipe() {
     let startY = 0;
     swipeTarget.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
     swipeTarget.addEventListener('touchend', e => {
       let endY = e.changedTouches[0].clientY;
-      if (startY - endY > 50 && currentMonthIndex === months.length - 1) { 
+      if (startY - endY > 40 && currentMonthIndex === months.length - 1) { 
         triggerFinale();
       }
     });
 
-    // Also support mouse drag for desktop testing
+    // Mouse drag support
     let isDragging = false;
     swipeTarget.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; });
     swipeTarget.addEventListener('mouseup', e => {
       if (!isDragging) return;
       isDragging = false;
-      if (startY - e.clientY > 50 && currentMonthIndex === months.length - 1) {
+      if (startY - e.clientY > 40 && currentMonthIndex === months.length - 1) {
         triggerFinale();
       }
     });
   }
 
   function triggerFinale() {
-    calebFrame.style.display = 'none'; // Hide the box completely
+    calebFrame.style.display = 'none'; 
     finaleScreen.classList.remove('hidden');
     
-    // Tiny delay to allow display:block to render before fading opacity
     setTimeout(() => {
       finaleScreen.classList.add('active');
     }, 50);
