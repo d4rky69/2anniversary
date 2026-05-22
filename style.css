@@ -1,112 +1,168 @@
-/* Cinematic Space Background */
+/* Animated Aurora Background (So the glass has something to refract) */
 body, html {
   margin: 0; padding: 0; width: 100%; height: 100%;
-  background: #050508;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 77, 77, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(100, 200, 255, 0.08) 0%, transparent 50%);
+  background: linear-gradient(-45deg, #090a0f, #150f1a, #0a1118, #050508);
+  background-size: 400% 400%;
+  animation: ambientDrift 15s ease infinite;
   font-family: 'Inter', sans-serif;
   display: flex; justify-content: center; align-items: center;
   color: white; overflow: hidden;
 }
 
-/* Floating Particles */
+@keyframes ambientDrift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating Light Particles */
 .particles {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 50px 50px; opacity: 0.3;
-  animation: drift 20s linear infinite;
+  background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 60px 60px; opacity: 0.4;
+  animation: drift 30s linear infinite;
 }
-@keyframes drift { 100% { background-position: 50px 50px; } }
+@keyframes drift { 100% { background-position: 60px 60px; } }
 
-/* PREMIUM MASTER FRAME */
+/* =========================================
+   THE TRUE GLASSMORPHISM MASTER FRAME
+   ========================================= */
 .master-frame {
   width: 88%; max-width: 420px; height: 75vh; max-height: 700px;
-  background: rgba(20, 20, 28, 0.45);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 30px;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 2px 20px rgba(255,255,255,0.05);
+  /* The Glass Body: Highly transparent, brightened slightly */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+  backdrop-filter: blur(25px) saturate(150%);
+  -webkit-backdrop-filter: blur(25px) saturate(150%);
+  
+  /* The Glass Edge: Crisp top/left borders and an inner highlight */
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  
   position: relative; z-index: 10; overflow: hidden;
   display: flex; flex-direction: column;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.8s ease, border-color 0.8s ease;
 }
 
-.border-sylus { 
-  border-top: 1px solid rgba(255, 77, 77, 0.3); 
-  box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 20px 40px -20px rgba(255, 77, 77, 0.15); 
+/* THE SHINE EFFECT (Sweeps across the glass) */
+.master-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -150%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-25deg);
+  animation: glassShine 7s infinite;
+  pointer-events: none; z-index: 20;
 }
-.border-caleb { 
-  border-top: 1px solid rgba(100, 200, 255, 0.4); 
-  box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 20px 40px -20px rgba(100, 200, 255, 0.15); 
+@keyframes glassShine {
+  0% { left: -150%; }
+  15% { left: 200%; }
+  100% { left: 200%; }
 }
 
+/* DYNAMIC CHARACTER GLOWS */
+.theme-sylus { 
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
+              0 0 40px rgba(255, 30, 30, 0.3), 
+              inset 0 0 20px rgba(255, 30, 30, 0.2); 
+}
+.theme-glitch {
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
+              0 0 50px rgba(0, 255, 65, 0.5), 
+              inset 0 0 30px rgba(0, 255, 65, 0.3);
+}
+.theme-caleb { 
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
+              0 0 40px rgba(64, 200, 255, 0.4), 
+              inset 0 0 20px rgba(64, 200, 255, 0.2); 
+}
+
+/* Content Area & Phase Transitions */
 .content-area {
-  flex: 1; display: flex; flex-direction: column; padding: 35px 25px; position: relative;
+  flex: 1; display: flex; flex-direction: column; padding: 35px 25px; position: relative; z-index: 15;
 }
-
-/* Phase Transitions */
 .phase {
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   width: 100%; height: 100%; position: absolute; top: 0; left: 0; padding: 35px 25px;
   box-sizing: border-box; opacity: 0; pointer-events: none;
-  transform: translateY(15px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: scale(0.95) translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.active { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
 
-/* SYLUS AESTHETIC */
+/* --- SYLUS AESTHETIC --- */
 .sylus-title {
-  font-family: 'Cinzel', serif; font-size: 2rem; color: #ff4d4d;
-  text-shadow: 0 0 15px rgba(255, 77, 77, 0.4); margin-bottom: 15px; font-weight: 600; text-align: center;
+  font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3333;
+  text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-bottom: 15px; font-weight: 700; text-align: center;
 }
-.sylus-subtitle { font-family: 'Cinzel', serif; color: #a0a0a0; font-size: 1rem; font-style: italic; text-align: center;}
+.sylus-subtitle { font-family: 'Cinzel', serif; color: #d0d0d0; font-size: 1rem; font-style: italic; text-align: center;}
 
-/* GLITCH AESTHETIC */
+/* --- GLITCH AESTHETIC --- */
 .terminal-text { font-family: monospace; font-size: 1.1rem; color: #00ff41; text-align: center; margin: 5px 0;}
-.glitch-title { font-size: 1.5rem; margin-bottom: 20px; }
-.error { color: #ff003c; animation: blink 0.15s infinite; }
+.glitch-title { font-size: 1.8rem; margin-bottom: 20px; text-shadow: 0 0 15px #00ff41; }
+.error { color: #ff003c; animation: blink 0.1s infinite; text-shadow: 0 0 10px #ff003c;}
 @keyframes blink { 50% { opacity: 0; } }
 
-/* CALEB / TECH AESTHETIC */
+/* --- CALEB/TECH AESTHETIC --- */
 .tech-header {
   width: 100%; text-align: center; font-family: 'Rajdhani', sans-serif;
-  font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 600;
-  border-bottom: 1px solid rgba(100, 200, 255, 0.2); padding-bottom: 15px;
-  margin-bottom: 30px; text-transform: uppercase;
+  font-size: 1.1rem; color: #64c8ff; letter-spacing: 4px; font-weight: 700;
+  border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 15px;
+  margin-bottom: 30px; text-transform: uppercase; text-shadow: 0 0 10px rgba(100,200,255,0.4);
 }
-.warning-header { color: #ff4757; border-color: rgba(255,71,87,0.2); }
+.warning-header { color: #ff4757; border-color: rgba(255,71,87,0.3); text-shadow: 0 0 10px rgba(255,71,87,0.4);}
 
 .caleb-text {
   font-size: 1.05rem; line-height: 1.7; margin-bottom: 25px; font-weight: 300; 
-  color: #e2e8f0; text-align: left; width: 100%;
+  color: #f0f0f0; text-align: left; width: 100%;
 }
-.firewall-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 10px; }
-.firewall-prompt { font-size: 0.95rem; text-align: center; margin-bottom: 25px; }
+.firewall-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 10px; font-size: 1.2rem; letter-spacing: 2px;}
+.firewall-prompt { font-size: 0.95rem; text-align: center; margin-bottom: 25px; color: #ddd;}
 
-/* Inputs & Buttons */
+/* =========================================
+   PREMIUM GLASS INPUTS & BUTTONS
+   ========================================= */
 .riddle-input {
-  width: 100%; padding: 16px; margin-top: 10px;
-  background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white; border-radius: 12px; font-size: 1rem; font-family: 'Inter', sans-serif;
-  outline: none; text-align: center; transition: all 0.3s ease;
-  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+  width: 100%; padding: 18px; margin-top: 10px;
+  background: rgba(0, 0, 0, 0.4); 
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px; font-size: 1rem; font-family: 'Inter', sans-serif;
+  color: white; outline: none; text-align: center; 
+  transition: all 0.3s ease;
+  box-shadow: inset 0 4px 15px rgba(0,0,0,0.5);
 }
-.riddle-input:focus { border-color: #64c8ff; background: rgba(100, 200, 255, 0.05); }
+.riddle-input:focus { 
+  border-color: #64c8ff; 
+  background: rgba(100, 200, 255, 0.1); 
+  box-shadow: 0 0 15px rgba(100,200,255,0.2), inset 0 4px 15px rgba(0,0,0,0.5);
+}
 
 .action-btn {
   width: 100%; padding: 18px; margin-top: auto;
-  background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
-  color: white; border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px; font-size: 1rem; font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
-  backdrop-filter: blur(5px); transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  color: white; 
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px; 
+  font-size: 1rem; font-family: 'Rajdhani', sans-serif; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer;
+  backdrop-filter: blur(10px); 
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
-.action-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.3); box-shadow: 0 0 20px rgba(255,255,255,0.05);}
-.action-btn:active { transform: scale(0.96); }
+.action-btn:hover { 
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.1);
+}
+.action-btn:active { transform: translateY(2px) scale(0.98); }
 
 .taunt-text {
-  color: #ff7675; font-style: italic; margin-top: 15px; font-size: 0.9rem;
-  min-height: 20px; font-family: 'Inter', sans-serif; font-weight: 300; text-align: center; width: 100%;
+  color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.95rem;
+  min-height: 20px; font-family: 'Inter', sans-serif; font-weight: 400; text-align: center; width: 100%;
+  text-shadow: 0 0 10px rgba(255,71,87,0.3);
 }
