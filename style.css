@@ -26,14 +26,13 @@ body, html {
 #crows-container { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
 .crow {
   position: absolute; right: -10vw; width: 60px; height: 60px;
-  /* SVG Crow shape encoded */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%230a0000" stroke="%23ff3333" stroke-width="0.5" d="M22,14 C22,14 16,10 12,12 C8,10 2,14 2,14 C2,14 6,8 12,5 C18,8 22,14 22,14 Z"/></svg>');
   background-repeat: no-repeat; background-position: center;
   animation: fly linear forwards; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
 }
 @keyframes fly {
   0% { transform: translateX(0vw) translateY(0) scale(1); }
-  50% { transform: translateX(-60vw) translateY(-20px) scaleY(0.8); } /* Flap effect */
+  50% { transform: translateX(-60vw) translateY(-20px) scaleY(0.8); }
   100% { transform: translateX(-120vw) translateY(10px) scale(1); }
 }
 
@@ -60,6 +59,8 @@ body, html {
   backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 50, 50, 0.3);
   box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 0, 0, 0.2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* 2. CALEB BLUISH-WHITE GLASS */
@@ -71,7 +72,7 @@ body, html {
   border-right: 1px solid rgba(100, 200, 255, 0.2);
   border-bottom: 1px solid rgba(100, 200, 255, 0.2);
   box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 30px rgba(100, 200, 255, 0.2), inset 0 2px 20px rgba(255,255,255,0.1);
-  transform: scale(0.9); /* Starts slightly smaller inside */
+  transform: scale(0.9);
 }
 .blue-glass.active-frame { transform: scale(1); opacity: 1; }
 .hidden { opacity: 0; pointer-events: none; }
@@ -86,7 +87,6 @@ body, html {
   opacity: 0; pointer-events: none; z-index: 11;
 }
 
-/* When the javascript adds the "shattering" class */
 .shattering .box-content { opacity: 0; transition: opacity 0.1s; }
 .shattering.red-glass { background: transparent; border: none; backdrop-filter: none; box-shadow: none; }
 .shattering .shard { opacity: 1; }
@@ -139,3 +139,48 @@ body, html {
 .action-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
 
 .taunt-text { color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.9rem; min-height: 20px; }
+
+/* =========================================
+   CHIBI IMAGES & TAP MECHANICS
+   ========================================= */
+.chibi-image {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+  z-index: 20;
+}
+
+.float-anim {
+  animation: floatChibi 4s ease-in-out infinite;
+}
+@keyframes floatChibi {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.angry-anim {
+  animation: angryShake 0.4s infinite alternate;
+}
+@keyframes angryShake {
+  0% { transform: rotate(-4deg) scale(1.05); }
+  100% { transform: rotate(4deg) scale(1.05); }
+}
+
+.tap-text {
+  margin-top: 25px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulseBlink 1.5s infinite;
+  text-shadow: 0 0 10px rgba(255, 50, 50, 0.5);
+  pointer-events: none;
+}
+@keyframes pulseBlink {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
