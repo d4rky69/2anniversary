@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Override</title>
+  <style>
+    /* Base Mobile Setup */
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      background-color: #0a0a0a;
+    }
+    
+    .phase {
+      display: none; /* Hidden by default */
+      width: 100%; height: 100%;
+      flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      box-sizing: border-box;
+    }
+    .active { display: flex; } /* Shows the current phase */
+
+    /* SYLUS THEME */
+    #sylus-theme { background-color: #0a0a0a; color: #8b0000; }
+    .dark-title { font-size: 2rem; letter-spacing: 2px; margin-bottom: 10px; }
+    .dark-subtitle { color: #555; font-style: italic; }
+    .feather-fall { font-size: 3rem; animation: float 4s ease-in-out infinite; }
+    @keyframes float {
+      0% { transform: translateY(-20px) rotate(0deg); }
+      50% { transform: translateY(20px) rotate(15deg); }
+      100% { transform: translateY(-20px) rotate(0deg); }
+    }
+
+    /* GLITCH SCREEN */
+    #glitch-screen { background-color: black; color: #0f0; }
+    .terminal-text { font-family: monospace; font-size: 1.2rem; }
+    .error { color: red; margin-top: 10px; animation: blink 0.2s infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* CALEB THEME */
+    #caleb-theme { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+    .notification-banner {
+      background: #ff4757; color: white; padding: 15px; border-radius: 10px;
+      font-weight: bold; width: 100%; box-sizing: border-box; margin-top: 40px;
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+    }
+    .dialogue-box {
+      background: white; padding: 25px; border-radius: 15px; width: 100%;
+      margin-top: auto; margin-bottom: 40px; box-sizing: border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left;
+    }
+    .caleb-text { font-size: 1.1rem; line-height: 1.6; color: #2f3542; margin-bottom: 15px; }
+    .continue-btn {
+      width: 100%; padding: 15px; background: #2f3542; color: white; border: none;
+      border-radius: 8px; font-size: 1rem; font-weight: bold; margin-top: 20px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Phase 1A: Sylus Bait -->
+  <div id="sylus-theme" class="phase active">
+    <div class="feather-fall">🪶</div>
+    <h1 class="dark-title">Welcome, Sweetheart.</h1>
+    <p class="dark-subtitle">Did you really think I'd forget what today is?</p>
+  </div>
+
+  <!-- Phase 1B: The Glitch -->
+  <div id="glitch-screen" class="phase">
+    <h1 class="terminal-text">SYSTEM OVERRIDE</h1>
+    <p class="terminal-text">Intercepting signal...</p>
+    <p class="terminal-text error">WARNING: UNAUTHORIZED SYLUS PROTOCOL</p>
+  </div>
+
+  <!-- Phase 1C: Caleb Takes Over -->
+  <div id="caleb-theme" class="phase">
+    <div class="notification-banner">
+      ⚠️ Signal Intercepted by: Caleb
+    </div>
+    <div class="dialogue-box">
+      <p class="caleb-text">"Did you really think I'd let him take over today? Little rebel."</p>
+      <p class="caleb-text">"Sorry I'm a little late, Mini. I was busy making sure this was perfect. But before I show you what I made..."</p>
+      <button class="continue-btn" onclick="startPhaseTwo()">Acknowledge & Proceed</button>
+    </div>
+  </div>
+
+  <script>
+    // Timer logic to switch between screens
+    setTimeout(() => {
+      // Hide Sylus, Show Glitch
+      document.getElementById('sylus-theme').classList.remove('active');
+      document.getElementById('glitch-screen').classList.add('active');
+      
+      setTimeout(() => {
+        // Hide Glitch, Show Caleb
+        document.getElementById('glitch-screen').classList.remove('active');
+        document.getElementById('caleb-theme').classList.add('active');
+      }, 1500); // Glitch lasts 1.5 seconds
+
+    }, 4000); // Sylus screen lasts 4 seconds
+
+    function startPhaseTwo() {
+      // We will build the riddle section here next!
+      alert("Transition to Phase 2: The Firewalls...");
+    }
+  </script>
+</body>
+</html>
