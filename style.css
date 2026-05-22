@@ -7,12 +7,9 @@ body, html {
   transition: background 1.5s ease;
 }
 
-/* Sylus Dark Red Background */
 .theme-sylus-bg { background: radial-gradient(circle at center, #1a0505 0%, #050000 100%); }
-/* Caleb Deep Space Blue Background */
 .theme-caleb-bg { background: radial-gradient(circle at center, #0a1128 0%, #02050a 100%); }
 
-/* Ambient Particles */
 .particles {
   position: absolute; width: 100%; height: 100%; z-index: 1;
   background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
@@ -20,9 +17,7 @@ body, html {
 }
 @keyframes drift { 100% { background-position: 50px 50px; } }
 
-/* =========================================
-   CROWS ANIMATION
-   ========================================= */
+/* CROWS ANIMATION */
 #crows-container { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
 .crow {
   position: absolute; right: -10vw; width: 60px; height: 60px;
@@ -36,9 +31,7 @@ body, html {
   100% { transform: translateX(-120vw) translateY(10px) scale(1); }
 }
 
-/* =========================================
-   MASTER GLASS BOX ARCHITECTURE
-   ========================================= */
+/* MASTER GLASS BOX ARCHITECTURE */
 .glass-box {
   width: 88%; max-width: 420px; height: 75vh; max-height: 700px;
   position: absolute; z-index: 10; border-radius: 20px;
@@ -49,23 +42,25 @@ body, html {
 .box-content {
   position: relative; z-index: 15; width: 100%; height: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 30px; box-sizing: border-box; opacity: 0; transition: opacity 0.5s ease;
+  padding: 25px; box-sizing: border-box; opacity: 0; transition: opacity 0.5s ease;
 }
 .box-content.active { opacity: 1; }
 
-/* 1. SYLUS RED GLASS */
+/* 1. SYLUS RED GLASS (Upgraded Aesthetics) */
 .red-glass {
-  background: rgba(20, 0, 0, 0.45);
-  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 50, 50, 0.3);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 0, 0, 0.2);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  background: linear-gradient(135deg, rgba(60, 5, 5, 0.45), rgba(15, 0, 0, 0.65));
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 50, 50, 0.5);
+  border-left: 1px solid rgba(255, 50, 50, 0.3);
+  border-bottom: 1px solid rgba(255, 50, 50, 0.1);
+  border-right: 1px solid rgba(255, 50, 50, 0.1);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.9), inset 0 2px 20px rgba(255, 0, 0, 0.3);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 
 /* 2. CALEB BLUISH-WHITE GLASS */
 .blue-glass {
-  background: linear-gradient(135deg, rgba(200, 230, 255, 0.1), rgba(200, 230, 255, 0.02));
+  background: linear-gradient(135deg, rgba(200, 230, 255, 0.15), rgba(200, 230, 255, 0.02));
   backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px);
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   border-left: 1px solid rgba(255, 255, 255, 0.3);
@@ -77,9 +72,7 @@ body, html {
 .blue-glass.active-frame { transform: scale(1); opacity: 1; }
 .hidden { opacity: 0; pointer-events: none; }
 
-/* =========================================
-   THE SHATTER EFFECT
-   ========================================= */
+/* THE SHATTER EFFECT */
 .shard {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(40, 0, 0, 0.5); backdrop-filter: blur(10px);
@@ -101,77 +94,69 @@ body, html {
 @keyframes shatter3 { to { transform: translate(60px, 100px) rotate(-15deg); opacity: 0; } }
 @keyframes shatter4 { to { transform: translate(-60px, 80px) rotate(20deg); opacity: 0; } }
 
-/* =========================================
-   TEXT & PHASES AESTHETICS
-   ========================================= */
-.phase { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; padding: 30px; box-sizing: border-box; text-align: center; }
+/* TEXT & PHASES AESTHETICS */
+.phase { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; padding: 25px; box-sizing: border-box; text-align: center; }
 .phase.active { display: flex; animation: fadeUp 0.6s ease forwards; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-.sylus-title { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff3333; text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-bottom: 15px; }
-.sylus-subtitle { font-family: 'Cinzel', serif; color: #aaa; font-style: italic; }
+.sylus-title { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #ff3333; text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-top: 10px; margin-bottom: 10px; }
+.sylus-subtitle { font-family: 'Cinzel', serif; color: #aaa; font-style: italic; font-size: 0.95rem; margin-bottom: 20px;}
 
 .terminal-text { font-family: monospace; font-size: 1.1rem; color: #00ff41; margin: 5px 0;}
 .glitch-title { font-size: 1.6rem; margin-bottom: 20px; text-shadow: 0 0 15px #00ff41; }
 .error { color: #ff003c; animation: blink 0.1s infinite; text-shadow: 0 0 10px #ff003c;}
 @keyframes blink { 50% { opacity: 0; } }
 
-.tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 700; border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 15px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(100,200,255,0.4); width: 100%; }
+.tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 700; border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 10px; margin-bottom: 15px; text-shadow: 0 0 10px rgba(100,200,255,0.4); width: 100%; }
 .warning-header { color: #ff4757; border-color: rgba(255,71,87,0.3); text-shadow: 0 0 10px rgba(255,71,87,0.4);}
-.caleb-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; font-weight: 300; color: #f0f0f0; text-align: left; width: 100%; }
+.caleb-text { font-size: 1rem; line-height: 1.5; margin-bottom: 15px; font-weight: 300; color: #f0f0f0; text-align: left; width: 100%; }
 .firewall-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 5px; font-size: 1.1rem; letter-spacing: 1px;}
-.firewall-prompt { font-size: 0.95rem; margin-bottom: 20px; color: #ccc;}
+.firewall-prompt { font-size: 0.95rem; margin-bottom: 15px; color: #ccc;}
 
 /* Inputs & Buttons */
 .riddle-input {
-  width: 100%; padding: 15px; margin-top: 10px; background: rgba(0, 0, 0, 0.4); 
+  width: 100%; padding: 15px; margin-top: 5px; background: rgba(0, 0, 0, 0.4); 
   border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; 
   outline: none; text-align: center; transition: all 0.3s ease;
 }
 .riddle-input:focus { border-color: #64c8ff; background: rgba(100, 200, 255, 0.1); box-shadow: 0 0 15px rgba(100,200,255,0.2); }
 
 .action-btn {
-  width: 100%; padding: 16px; margin-top: auto; background: rgba(255,255,255,0.1);
+  width: 100%; padding: 15px; margin-top: auto; background: rgba(255,255,255,0.1);
   color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; 
   font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; 
   cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s ease;
 }
 .action-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
 
-.taunt-text { color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.9rem; min-height: 20px; }
+.taunt-text { color: #ff4757; font-style: italic; margin-top: 10px; font-size: 0.85rem; min-height: 20px; }
 
-/* =========================================
-   CHIBI IMAGES & TAP MECHANICS
-   ========================================= */
+/* CHIBI IMAGES & TAP MECHANICS (FIXED SIZING) */
 .chibi-image {
-  width: 140px;
-  height: 140px;
+  width: 110px; /* Scaled down so it fits perfectly */
+  height: 110px;
   object-fit: contain;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+  margin-bottom: 5px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
   z-index: 20;
 }
 
-.float-anim {
-  animation: floatChibi 4s ease-in-out infinite;
-}
+.float-anim { animation: floatChibi 4s ease-in-out infinite; }
 @keyframes floatChibi {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+  50% { transform: translateY(-10px); }
 }
 
-.angry-anim {
-  animation: angryShake 0.4s infinite alternate;
-}
+.angry-anim { animation: angryShake 0.4s infinite alternate; }
 @keyframes angryShake {
   0% { transform: rotate(-4deg) scale(1.05); }
   100% { transform: rotate(4deg) scale(1.05); }
 }
 
 .tap-text {
-  margin-top: 25px;
+  margin-top: 15px;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.8);
   text-transform: uppercase;
@@ -181,6 +166,6 @@ body, html {
   pointer-events: none;
 }
 @keyframes pulseBlink {
-  0%, 100% { opacity: 0.5; }
+  0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
 }
