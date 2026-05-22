@@ -3,37 +3,48 @@ body, html {
   margin: 0; padding: 0; width: 100%; height: 100%;
   font-family: 'Inter', sans-serif;
   display: flex; justify-content: center; align-items: center;
-  overflow: hidden; color: white;
-  transition: background 1.5s ease;
+  overflow: hidden; color: white; transition: background 1.5s ease;
 }
 
-.theme-sylus-bg { background: radial-gradient(circle at center, #1a0505 0%, #050000 100%); }
+/* Deep, Dark Red for Sylus */
+.theme-sylus-bg { background: radial-gradient(circle at center, #240000 0%, #050000 100%); }
+/* Deep Space Blue for Caleb */
 .theme-caleb-bg { background: radial-gradient(circle at center, #0a1128 0%, #02050a 100%); }
 
 .particles {
-  position: absolute; width: 100%; height: 100%; z-index: 1;
+  position: absolute; width: 100%; height: 100%; z-index: 1; pointer-events: none;
   background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 50px 50px; opacity: 0.3; animation: drift 20s linear infinite;
 }
 @keyframes drift { 100% { background-position: 50px 50px; } }
 
-/* CROWS ANIMATION */
-#crows-container { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
+/* CROWS, PLANES, APPLES ANIMATIONS */
+#crows-container, #caleb-bg-elements { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
+
 .crow {
   position: absolute; right: -10vw; width: 60px; height: 60px;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%230a0000" stroke="%23ff3333" stroke-width="0.5" d="M22,14 C22,14 16,10 12,12 C8,10 2,14 2,14 C2,14 6,8 12,5 C18,8 22,14 22,14 Z"/></svg>');
   background-repeat: no-repeat; background-position: center;
-  animation: fly linear forwards; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+  animation: flyLeft linear forwards; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
 }
-@keyframes fly {
+.plane, .apple { position: absolute; bottom: -10vh; font-size: 2rem; animation: floatUp linear forwards; opacity: 0.6; filter: drop-shadow(0 5px 10px rgba(100,200,255,0.4));}
+.apple { filter: drop-shadow(0 5px 10px rgba(255,50,50,0.4)); font-size: 1.5rem; }
+
+@keyframes flyLeft {
   0% { transform: translateX(0vw) translateY(0) scale(1); }
   50% { transform: translateX(-60vw) translateY(-20px) scaleY(0.8); }
   100% { transform: translateX(-120vw) translateY(10px) scale(1); }
 }
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+}
 
 /* MASTER GLASS BOX ARCHITECTURE */
 .glass-box {
-  width: 88%; max-width: 420px; height: 75vh; max-height: 700px;
+  width: 88%; max-width: 420px; height: 78vh; max-height: 750px;
   position: absolute; z-index: 10; border-radius: 20px;
   display: flex; flex-direction: column; justify-content: center;
   transition: all 0.5s ease;
@@ -46,33 +57,27 @@ body, html {
 }
 .box-content.active { opacity: 1; }
 
-/* 1. SYLUS RED GLASS (Upgraded Aesthetics) */
 .red-glass {
   background: linear-gradient(135deg, rgba(60, 5, 5, 0.45), rgba(15, 0, 0, 0.65));
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 50, 50, 0.5);
-  border-left: 1px solid rgba(255, 50, 50, 0.3);
-  border-bottom: 1px solid rgba(255, 50, 50, 0.1);
-  border-right: 1px solid rgba(255, 50, 50, 0.1);
+  border-top: 1px solid rgba(255, 50, 50, 0.5); border-left: 1px solid rgba(255, 50, 50, 0.3);
+  border-bottom: 1px solid rgba(255, 50, 50, 0.1); border-right: 1px solid rgba(255, 50, 50, 0.1);
   box-shadow: 0 25px 60px rgba(0,0,0,0.9), inset 0 2px 20px rgba(255, 0, 0, 0.3);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 
-/* 2. CALEB BLUISH-WHITE GLASS */
 .blue-glass {
   background: linear-gradient(135deg, rgba(200, 230, 255, 0.15), rgba(200, 230, 255, 0.02));
   backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px);
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  border-right: 1px solid rgba(100, 200, 255, 0.2);
-  border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.6); border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(100, 200, 255, 0.2); border-bottom: 1px solid rgba(100, 200, 255, 0.2);
   box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 30px rgba(100, 200, 255, 0.2), inset 0 2px 20px rgba(255,255,255,0.1);
   transform: scale(0.9);
 }
 .blue-glass.active-frame { transform: scale(1); opacity: 1; }
-.hidden { opacity: 0; pointer-events: none; }
+.hidden { opacity: 0; pointer-events: none; display: none !important; }
 
-/* THE SHATTER EFFECT */
+/* SHATTER EFFECT */
 .shard {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(40, 0, 0, 0.5); backdrop-filter: blur(10px);
@@ -83,7 +88,6 @@ body, html {
 .shattering .box-content { opacity: 0; transition: opacity 0.1s; }
 .shattering.red-glass { background: transparent; border: none; backdrop-filter: none; box-shadow: none; }
 .shattering .shard { opacity: 1; }
-
 .shattering .shard-1 { clip-path: polygon(0 0, 60% 0, 40% 50%, 0 40%); animation: shatter1 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
 .shattering .shard-2 { clip-path: polygon(60% 0, 100% 0, 100% 60%, 40% 50%); animation: shatter2 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
 .shattering .shard-3 { clip-path: polygon(100% 60%, 100% 100%, 30% 100%, 40% 50%); animation: shatter3 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
@@ -99,27 +103,27 @@ body, html {
 .phase.active { display: flex; animation: fadeUp 0.6s ease forwards; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-.sylus-title { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #ff3333; text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-top: 10px; margin-bottom: 10px; }
+.sylus-title { font-family: 'Cinzel', serif; font-size: 2rem; color: #ff3333; text-shadow: 0 0 20px rgba(255, 50, 50, 0.6); margin-top: 10px; margin-bottom: 10px; }
 .sylus-subtitle { font-family: 'Cinzel', serif; color: #aaa; font-style: italic; font-size: 0.95rem; margin-bottom: 20px;}
-
 .terminal-text { font-family: monospace; font-size: 1.1rem; color: #00ff41; margin: 5px 0;}
 .glitch-title { font-size: 1.6rem; margin-bottom: 20px; text-shadow: 0 0 15px #00ff41; }
 .error { color: #ff003c; animation: blink 0.1s infinite; text-shadow: 0 0 10px #ff003c;}
 @keyframes blink { 50% { opacity: 0; } }
 
-.tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 700; border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 10px; margin-bottom: 15px; text-shadow: 0 0 10px rgba(100,200,255,0.4); width: 100%; }
+.tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #64c8ff; letter-spacing: 3px; font-weight: 700; border-bottom: 1px solid rgba(100, 200, 255, 0.3); padding-bottom: 10px; margin-bottom: 15px; text-shadow: 0 0 10px rgba(100,200,255,0.4); width: 100%; text-transform: uppercase;}
 .warning-header { color: #ff4757; border-color: rgba(255,71,87,0.3); text-shadow: 0 0 10px rgba(255,71,87,0.4);}
 .caleb-text { font-size: 1rem; line-height: 1.5; margin-bottom: 15px; font-weight: 300; color: #f0f0f0; text-align: left; width: 100%; }
 .firewall-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #fff; margin-bottom: 5px; font-size: 1.1rem; letter-spacing: 1px;}
-.firewall-prompt { font-size: 0.95rem; margin-bottom: 15px; color: #ccc;}
+.firewall-prompt { font-size: 0.95rem; margin-bottom: 20px; color: #ccc; min-height: 40px;}
 
-/* Inputs & Buttons */
-.riddle-input {
-  width: 100%; padding: 15px; margin-top: 5px; background: rgba(0, 0, 0, 0.4); 
+/* QUIZ BUTTONS (Replaced Input) */
+.quiz-options-container { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.quiz-btn {
+  width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.4); 
   border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; 
-  outline: none; text-align: center; transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;
 }
-.riddle-input:focus { border-color: #64c8ff; background: rgba(100, 200, 255, 0.1); box-shadow: 0 0 15px rgba(100,200,255,0.2); }
+.quiz-btn:active { transform: scale(0.97); background: rgba(100, 200, 255, 0.2); border-color: #64c8ff;}
 
 .action-btn {
   width: 100%; padding: 15px; margin-top: auto; background: rgba(255,255,255,0.1);
@@ -128,44 +132,58 @@ body, html {
   cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s ease;
 }
 .action-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
+.taunt-text { color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.9rem; min-height: 20px; text-align: center;}
 
-.taunt-text { color: #ff4757; font-style: italic; margin-top: 10px; font-size: 0.85rem; min-height: 20px; }
-
-/* CHIBI IMAGES & TAP MECHANICS (FIXED SIZING) */
-.chibi-image {
-  width: 110px; /* Scaled down so it fits perfectly */
-  height: 110px;
-  object-fit: contain;
-  margin-bottom: 5px;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
-  z-index: 20;
+/* CALENDAR & MEMORY VAULT */
+.calendar-card {
+  width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.2); border-radius: 15px; padding: 15px; box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
+.image-holder {
+  width: 100%; aspect-ratio: 1/1; background: rgba(255,255,255,0.05); border-radius: 10px;
+  overflow: hidden; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 15px;
+  display: flex; justify-content: center; align-items: center;
+}
+.image-holder img { width: 100%; height: 100%; object-fit: cover; }
+.month-title { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin: 0; color: #fff; letter-spacing: 2px;}
+.calendar-instruction { font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px;}
 
+.swipe-anim { animation: swipeHint 1.5s infinite; color: #64c8ff; font-weight: bold;}
+@keyframes swipeHint { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* CHIBI IMAGES */
+.chibi-image { width: 110px; height: 110px; object-fit: contain; margin-bottom: 5px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); z-index: 20; }
 .float-anim { animation: floatChibi 4s ease-in-out infinite; }
-@keyframes floatChibi {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
+@keyframes floatChibi { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 .angry-anim { animation: angryShake 0.4s infinite alternate; }
-@keyframes angryShake {
-  0% { transform: rotate(-4deg) scale(1.05); }
-  100% { transform: rotate(4deg) scale(1.05); }
-}
+@keyframes angryShake { 0% { transform: rotate(-4deg) scale(1.05); } 100% { transform: rotate(4deg) scale(1.05); } }
 
-.tap-text {
-  margin-top: 15px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  animation: pulseBlink 1.5s infinite;
-  text-shadow: 0 0 10px rgba(255, 50, 50, 0.5);
-  pointer-events: none;
+.tap-text { margin-top: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 2px; animation: pulseBlink 1.5s infinite; text-shadow: 0 0 10px rgba(255, 50, 50, 0.5); pointer-events: none;}
+@keyframes pulseBlink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* THE FINALE OVERLAY (Mimicking your screenshot) */
+.finale-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at center, #0b1021 0%, #03050a 100%);
+  z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 1s ease;
 }
-@keyframes pulseBlink {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+.finale-overlay.active { opacity: 1; }
+.neon-cursive {
+  font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: #fff;
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #82c8ff, 0 0 80px #82c8ff;
+  margin: 0 0 15px 0; text-align: center; line-height: 1.2;
 }
+.neon-sub {
+  font-family: 'Inter', sans-serif; font-size: 0.9rem; letter-spacing: 6px;
+  color: #a0c8ff; margin-bottom: 50px; text-transform: uppercase; font-weight: 400;
+}
+.galaxy-btn {
+  padding: 12px 30px; background: transparent; border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 30px; color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s;
+}
+.galaxy-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
