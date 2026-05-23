@@ -308,6 +308,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // >>> FIX APPLIED HERE: Initialize the first question in the background <<<
+  loadQuestion();
+
 
   // --- 4. FLIPPING TABLE CALENDAR ---
   const months = [
