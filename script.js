@@ -11,11 +11,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const phaseGlitch = document.getElementById('phase-glitch');
   const phaseCaleb = document.getElementById('phase-caleb');
   const phaseFirewall = document.getElementById('phase-firewall');
-  const phaseCalendar = document.getElementById('phase-calendar');
+  const phasePhotoStack = document.getElementById('phase-photo-stack');
+  const cardStack = document.getElementById('card-stack');
   
   const btnProceed = document.getElementById('btn-proceed');
   const tapInstruction = document.getElementById('tap-instruction');
   const tauntBox = document.getElementById('taunt-message');
+
+  // --- 0. GLOBAL UI (Ripples, Fullscreen, Music) ---
+  
+  // Tap Ripples
+  document.addEventListener('click', (e) => {
+    // Prevent ripple on UI buttons to avoid visual mess
+    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT') return;
+    
+    const ripple = document.createElement('div');
+    ripple.className = 'tap-ripple';
+    ripple.style.left = `${e.clientX}px`;
+    ripple.style.top = `${e.clientY}px`;
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+
+  // Fullscreen Logic
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => console.log(err));
+      fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+    } else {
+      document.exitFullscreen();
+      fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+    }
+  });
+
+  // Music Player Logic
+  const bgMusic = document.getElementById('bg-music');
+  const cdPlayer = document.getElementById('cd-player');
+  const musicMenu = document.getElementById('music-menu');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const volSlider = document.getElementById('volume-slider');
+
+  cdPlayer.addEventListener('click', () => {
+    musicMenu.classList.toggle('hidden');
+  });
+
+  playPauseBtn.addEventListener('click', () => {
+    if (bgMusic.paused) {
+      bgMusic.play();
+      cdPlayer.classList.remove('paused');
+      playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    } else {
+      bgMusic.pause();
+      cdPlayer.classList.add('paused');
+      playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
+  });
+
+  volSlider.addEventListener('input', (e) => {
+    bgMusic.volume = e.target.value;
+  });
+
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
   function spawnCrows() {
@@ -104,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const quizProgress = document.getElementById('quiz-progress');
   const quizQuestion = document.getElementById('quiz-question');
   const quizOptionsBox = document.getElementById('quiz-options');
-
   const taunts = [
     "Try again, Mini. Keep your eyes on me.",
     "Wrong. Are you even trying? Don't make me come over there.",
@@ -113,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadQuestion() {
     if (currentQ >= quizData.length) {
-      phaseFirewall.classList.remove('active');
-      phaseCalendar.classList.add('active');
-      initCalendar();
+      calebFrame.style.display = 'none';
+      phasePhotoStack.classList.remove('hidden');
+      initPhotoStack();
       return;
     }
 
@@ -149,96 +204,122 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. 3D FLIPPING TABLE CALENDAR LOGIC ---
-  const months = [
-    "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", 
-    "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025",
-    "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025",
-    "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026"
-  ];
+  // --- 4. OPTIMIZED INTERACTIVE PHOTO STACK LOGIC ---
+  const totalPhotos = 25; 
+  let cards = [];
   
-  let currentMonthIndex = 0;
-  const calendarContainer = document.getElementById('calendar-container');
-  const calendarPage = document.getElementById('calendar-page');
-  const monthLabel = document.getElementById('month-label');
-  const monthImage = document.getElementById('month-image');
-  const calInstruction = document.getElementById('calendar-instruction');
-
-  function initCalendar() {
-    updateCalendarUI();
-    enableCalendarSwipe();
-  }
-
-  function updateCalendarUI() {
-    monthLabel.innerText = months[currentMonthIndex];
-    monthImage.src = `${currentMonthIndex}.jpg`; 
-    monthImage.onerror = function() { this.src = 'placeholder.jpg'; };
-
-    if (currentMonthIndex === months.length - 1) {
-      calInstruction.innerText = "SWIPE UP TO UNLOCK THE PRESENT";
-    } else {
-      calInstruction.innerText = "Swipe up to turn the page";
+  function initPhotoStack() {
+    for (let i = totalPhotos - 1; i >= 0; i--) {
+      let card = document.createElement('div');
+      card.className = 'photo-card';
+      card.dataset.index = i;
+      
+      let img = document.createElement('img');
+      img.src = `${i}.jpg`; // Expects 0.jpg through 24.jpg
+      img.onerror = function() { this.src = 'placeholder.jpg'; }; 
+      card.appendChild(img);
+      
+      let rotation = Math.floor(Math.random() * 16) - 8; 
+      let xOffset = Math.floor(Math.random() * 16) - 8; 
+      let yOffset = Math.floor(Math.random() * 16) - 8;
+      
+      let baseTransform = `translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg)`;
+      card.dataset.baseTransform = baseTransform;
+      card.style.transform = baseTransform;
+      card.style.zIndex = totalPhotos - i;
+      
+      cardStack.appendChild(card);
+      cards.push(card);
     }
+    
+    cards.reverse();
+    
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add('drop-in');
+        setTimeout(() => {
+          card.classList.remove('drop-in');
+          card.style.opacity = 1; 
+        }, 600);
+      }, (totalPhotos - index) * 80); 
+    });
+
+    setTimeout(enableDragLogic, totalPhotos * 80 + 600);
   }
 
-  function enableCalendarSwipe() {
-    let startY = 0;
-    let isFlipping = false;
-
-    // Touch Support for Mobile
-    calendarContainer.addEventListener('touchstart', e => { 
-      startY = e.touches[0].clientY; 
-    }, {passive: true});
+  function enableDragLogic() {
+    let activeCardIndex = 0;
     
-    calendarContainer.addEventListener('touchend', e => {
-      if (isFlipping) return;
-      let endY = e.changedTouches[0].clientY;
-      if (startY - endY > 40) { handlePageTurn(); }
-    });
+    function attachDrag(card) {
+      if (!card) return;
+      
+      let isDragging = false;
+      let startX = 0, currentX = 0;
+      
+      // Pointer events for ultra-smooth tracking on mobile/desktop
+      card.addEventListener('pointerdown', e => {
+        isDragging = true;
+        startX = e.clientX;
+        card.style.transition = 'none'; 
+        card.style.cursor = 'grabbing';
+        card.setPointerCapture(e.pointerId);
+      });
 
-    // Mouse Drag Support for Desktop
-    let isDragging = false;
-    calendarContainer.addEventListener('mousedown', e => { 
-      isDragging = true; startY = e.clientY; 
-    });
-    calendarContainer.addEventListener('mouseup', e => {
-      if (!isDragging || isFlipping) return;
-      isDragging = false;
-      if (startY - e.clientY > 40) { handlePageTurn(); }
-    });
+      card.addEventListener('pointermove', e => {
+        if (!isDragging) return;
+        currentX = e.clientX - startX;
+        let dragRotation = currentX * 0.05; 
+        // Moves the card based on finger distance
+        card.style.transform = `${card.dataset.baseTransform} translate(${currentX}px, ${Math.abs(currentX)*0.1}px) rotate(${dragRotation}deg)`;
+      });
 
-    function handlePageTurn() {
-      if (currentMonthIndex === months.length - 1) {
-        triggerFinale();
+      card.addEventListener('pointerup', e => {
+        if (!isDragging) return;
+        isDragging = false;
+        card.style.cursor = 'grab';
+        card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        
+        // Threshold to swipe away
+        if (currentX > 120 || currentX < -120) {
+          handleCardRemoval(card, currentX);
+        } else {
+          // Snap back
+          card.style.transform = card.dataset.baseTransform;
+        }
+        currentX = 0;
+        card.releasePointerCapture(e.pointerId);
+      });
+    }
+
+    function handleCardRemoval(card, throwDistance) {
+      if (activeCardIndex === totalPhotos - 1) {
+        triggerBurnAndFinale(card);
         return;
       }
 
-      isFlipping = true;
+      // Throw physics
+      let throwX = throwDistance > 0 ? window.innerWidth : -window.innerWidth;
+      card.style.transform = `translate(${throwX}px, 100px) rotate(${throwDistance * 0.1}deg)`;
+      card.style.opacity = '0';
       
-      // 1. Trigger the Flip UP animation
-      calendarPage.classList.remove('turn-in');
-      calendarPage.classList.add('turn-out');
-      
-      setTimeout(() => {
-        // 2. Halfway through (when invisible), update the month content
-        currentMonthIndex++;
-        updateCalendarUI();
-        
-        // 3. Trigger the Flip DOWN animation
-        calendarPage.classList.remove('turn-out');
-        calendarPage.classList.add('turn-in');
-        
-        setTimeout(() => {
-          isFlipping = false;
-        }, 400); // Wait for turn-in to finish
-      }, 400); // Wait for turn-out to finish
+      setTimeout(() => { card.remove(); }, 400);
+
+      activeCardIndex++;
+      attachDrag(cards[activeCardIndex]);
     }
+
+    attachDrag(cards[activeCardIndex]);
   }
 
-  function triggerFinale() {
-    calebFrame.style.display = 'none'; 
-    finaleScreen.classList.remove('hidden');
-    setTimeout(() => { finaleScreen.classList.add('active'); }, 50);
+  function triggerBurnAndFinale(lastCard) {
+    lastCard.style.transform = lastCard.dataset.baseTransform;
+    lastCard.classList.add('burn-effect');
+
+    setTimeout(() => {
+      phasePhotoStack.style.display = 'none';
+      finaleScreen.classList.remove('hidden');
+      setTimeout(() => { finaleScreen.classList.add('active'); }, 50);
+    }, 1800);
   }
 
 });
