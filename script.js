@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // >>> FIX APPLIED HERE: Initialize the first question in the background <<<
+  // Load the first question immediately in the background
   loadQuestion();
 
 
@@ -482,14 +482,14 @@ document.addEventListener('DOMContentLoaded', () => {
           blue.classList.add('burst');
           setTimeout(() => blue.classList.add('hidden'), 500);
           question.innerText = "If you got a chance to go back to your past (2019), would you find me and start it all over?";
-          popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 10px 30px rgba(255, 77, 77, 0.4)";
+          popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 30px 60px rgba(255, 77, 77, 0.4)";
           question.style.color = "#ff4d4d";
           question.style.textShadow = "0 0 15px rgba(255, 77, 77, 0.6)";
       } else {
           red.classList.add('burst');
           setTimeout(() => red.classList.add('hidden'), 500);
           question.innerText = "If you were given the chance to do something for me, what's the biggest thing you would do?";
-          popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 10px 30px rgba(100, 200, 255, 0.4)";
+          popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 30px 60px rgba(100, 200, 255, 0.4)";
           question.style.color = "#64c8ff";
           question.style.textShadow = "0 0 15px rgba(100, 200, 255, 0.6)";
       }
