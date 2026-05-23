@@ -24,43 +24,15 @@ body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; he
 /* =========================================
    MINECRAFT-EDGED NESTED GLASS ARCHITECTURE
    ========================================= */
-.glass-box { 
-  width: 92%; max-width: 420px; height: 85vh; max-height: 800px; 
-  position: relative; z-index: 10; 
-  display: flex; flex-direction: column; 
-  padding: 12px; 
-  transition: all 0.5s ease; 
-}
-
-.red-glass { 
-  background: rgba(40, 5, 5, 0.45); backdrop-filter: blur(15px); 
-  border: 6px solid rgba(255, 50, 50, 0.5); border-radius: 4px;
-  box-shadow: inset 4px 4px 0px rgba(255, 150, 150, 0.3), inset -4px -4px 0px rgba(15, 0, 0, 0.6), 0 30px 60px rgba(0,0,0,0.9); 
-  cursor: pointer; 
-}
-.blue-glass { 
-  background: rgba(5, 20, 45, 0.45); backdrop-filter: blur(15px); 
-  border: 6px solid rgba(100, 200, 255, 0.5); border-radius: 4px;
-  box-shadow: inset 4px 4px 0px rgba(200, 230, 255, 0.4), inset -4px -4px 0px rgba(0, 10, 25, 0.6), 0 30px 60px rgba(0,0,0,0.9); 
-}
-
-.inner-glass-pane {
-  flex: 1; position: relative; overflow: hidden;
-  background: rgba(0, 0, 0, 0.3); border-radius: 2px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.15), inset -2px -2px 0px rgba(0, 0, 0, 0.5);
-  display: flex; flex-direction: column;
-}
-
-.box-content { 
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-  display: flex; flex-direction: column; align-items: center; justify-content: center; 
-  padding: 30px 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease;
-}
+.glass-box { width: 92%; max-width: 420px; height: 85vh; max-height: 800px; position: relative; z-index: 10; display: flex; flex-direction: column; padding: 12px; transition: all 0.5s ease; }
+.red-glass { background: rgba(40, 5, 5, 0.45); backdrop-filter: blur(15px); border: 6px solid rgba(255, 50, 50, 0.5); border-radius: 4px; box-shadow: inset 4px 4px 0px rgba(255, 150, 150, 0.3), inset -4px -4px 0px rgba(15, 0, 0, 0.6), 0 30px 60px rgba(0,0,0,0.9); cursor: pointer; }
+.blue-glass { background: rgba(5, 20, 45, 0.45); backdrop-filter: blur(15px); border: 6px solid rgba(100, 200, 255, 0.5); border-radius: 4px; box-shadow: inset 4px 4px 0px rgba(200, 230, 255, 0.4), inset -4px -4px 0px rgba(0, 10, 25, 0.6), 0 30px 60px rgba(0,0,0,0.9); }
+.inner-glass-pane { flex: 1; position: relative; overflow: hidden; background: rgba(0, 0, 0, 0.3); border-radius: 2px; border: 4px solid rgba(255, 255, 255, 0.1); box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.15), inset -2px -2px 0px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; }
+.box-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease; }
 .box-content.active { opacity: 1; }
 .hidden { opacity: 0; pointer-events: none; display: none !important; }
 
-/* GLOBAL UI (Safely inside the inner pane) */
+/* GLOBAL UI */
 .global-ui { position: absolute; top: 15px; right: 15px; z-index: 10000; display: flex; align-items: flex-start; gap: 10px; transition: opacity 0.3s; }
 .ui-btn { background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.2); border-radius: 4px; color: #fff; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s ease; box-shadow: inset 2px 2px 0px rgba(255,255,255,0.1), inset -2px -2px 0px rgba(0,0,0,0.4); font-size: 1rem; }
 .ui-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
@@ -131,7 +103,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .taunt-text { color: #ff4757; font-style: italic; margin-top: 15px; font-size: 0.95rem; text-align: center; }
 
 /* =========================================
-   3D TABLE CALENDAR (Tap & Swipe)
+   3D TABLE CALENDAR
    ========================================= */
 .desk-calendar { width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; perspective: 1000px; flex: 1; margin-top: 5px; cursor: pointer; -webkit-tap-highlight-color: transparent;}
 .calendar-spirals { width: 70%; height: 25px; position: absolute; top: -12px; display: flex; justify-content: space-evenly; z-index: 20; }
@@ -190,5 +162,28 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 @keyframes floatContent { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 .neon-cursive { font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: #fff; text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #82c8ff, 0 0 80px #82c8ff; margin: 0 0 20px 0; line-height: 1.2; }
 .neon-sub { font-family: 'Inter', sans-serif; font-size: 0.9rem; letter-spacing: 8px; color: #a0c8ff; margin-bottom: 50px; text-transform: uppercase; font-weight: 500; text-shadow: 0 0 10px rgba(160,200,255,0.5);}
-.galaxy-btn { padding: 18px 30px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.4); border-radius: 4px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; box-shadow: inset 2px 2px 0px rgba(255,255,255,0.1), inset -2px -2px 0px rgba(0,0,0,0.5), 0 0 20px rgba(130,200,255,0.2); cursor: pointer; transition: all 0.3s; backdrop-filter: blur(5px);}
-.galaxy-btn:active { transform: translateY(2px) scale(0.95); background: rgba(255,255,255,0.15);}
+
+/* =========================================
+   PHASE 7: INTIMATE DOSSIER
+   ========================================= */
+.dossier-options { display: flex; flex-direction: column; gap: 15px; width: 100%; margin-top: 10px; overflow-y: auto; max-height: 50vh; padding-right: 5px;}
+.dossier-options::-webkit-scrollbar { width: 4px; }
+.dossier-options::-webkit-scrollbar-thumb { background: rgba(255,159,67,0.5); border-radius: 2px; }
+
+.protocol-card { background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; transition: all 0.3s ease; cursor: pointer; box-shadow: inset 2px 2px 0px rgba(255,255,255,0.05), inset -2px -2px 0px rgba(0,0,0,0.6); }
+.protocol-card.expanded { border-color: rgba(255, 159, 67, 0.6); box-shadow: 0 0 20px rgba(255, 159, 67, 0.2), inset 2px 2px 0px rgba(255,255,255,0.1); background: rgba(20, 10, 0, 0.8);}
+.protocol-header { padding: 15px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); }
+.protocol-header i { color: #ff9f43; font-size: 1.2rem; }
+.protocol-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; color: #fff; }
+.protocol-body { max-height: 0; padding: 0 15px; opacity: 0; transition: all 0.4s ease; overflow: hidden; }
+.protocol-card.expanded .protocol-body { max-height: 200px; padding: 0 15px 15px 15px; opacity: 1; }
+.protocol-body p { font-size: 0.95rem; color: #d0d0d0; line-height: 1.5; margin-bottom: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;}
+
+.initiate-btn { width: 100%; padding: 12px; background: rgba(255, 159, 67, 0.2); border: 2px solid #ff9f43; border-radius: 4px; color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; box-shadow: inset 0 0 10px rgba(255, 159, 67, 0.3); }
+.initiate-btn:active { transform: scale(0.97); background: rgba(255, 159, 67, 0.4); }
+
+.lockdown-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20, 0, 0, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+.lockdown-overlay.active { opacity: 1; pointer-events: auto; }
+.lockdown-icon { font-size: 4rem; color: #ff4d4d; margin-bottom: 20px; animation: pulseBlink 1.5s infinite; text-shadow: 0 0 20px #ff4d4d; }
+.lockdown-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 5px; color: #fff; margin: 0 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+.lockdown-text { font-size: 1.1rem; color: #ccc; text-align: center; line-height: 1.6; text-transform: uppercase; letter-spacing: 2px; }
