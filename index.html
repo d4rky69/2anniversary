@@ -11,6 +11,11 @@
 </head>
 <body class="theme-sylus-bg">
 
+  <div id="startup-screen" class="startup-overlay">
+    <div class="tech-header" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.3); text-shadow: 0 0 15px rgba(255, 77, 77, 0.5);">SYSTEM STANDBY</div>
+    <button id="start-btn" class="action-btn" style="border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 15px rgba(255,77,77,0.3); width: 80%; max-width: 300px;">INITIATE PROTOCOL</button>
+  </div>
+
   <div id="crows-container"></div>
   <div id="caleb-bg-elements" style="display: none;"></div>
   <div class="particles"></div>
@@ -38,7 +43,7 @@
         </div>
       </div>
       
-      <audio id="bg-music" src="your-song.mp3" autoplay loop></audio>
+      <audio id="bg-music" src="your-song.mp3" loop></audio>
 
       <div id="phase-sylus" class="box-content phase active">
         <div class="chibi-glow-sylus">
@@ -49,7 +54,7 @@
         <p class="sylus-subtitle">Did you really think I'd forget what today is?</p>
         
         <div class="sylus-gif-wrapper">
-          <img src="sylus-aesthetic.gif" alt="" class="sylus-gif" onerror="this.style.display='none'">
+          <img src="sylus-aesthetic.gif" alt="Sylus Aesthetic" class="sylus-gif" onerror="this.style.display='none'">
         </div>
 
         <div class="tap-zone">
@@ -195,7 +200,10 @@
         <p class="lockdown-text">Put your phone away.<br>I am waiting for you.</p>
       </div>
 
-    </div> </div> <div id="image-lightbox" class="lightbox hidden">
+    </div> 
+  </div> 
+
+  <div id="image-lightbox" class="lightbox hidden">
     <div class="lightbox-content">
       <button id="close-lightbox" class="ui-btn"><i class="fa-solid fa-xmark"></i></button>
       <img id="lightbox-img" src="" alt="Zoomed Memory">
