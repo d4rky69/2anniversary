@@ -21,9 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const tapInstruction = document.getElementById('tap-instruction');
   const tauntBox = document.getElementById('taunt-message');
 
-  // --- 0. GLOBAL UI (Instant Ripples, Fullscreen, Music) ---
+  // --- 0. GLOBAL UI (Instant Ripples, Fullscreen, Music, Lightbox) ---
   document.addEventListener('pointerdown', (e) => {
-    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.id === 'fingerprint-btn') return;
+    // Prevent ripple on buttons, inputs, or the image popup itself
+    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.id === 'fingerprint-btn') return;
+    
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
     ripple.style.left = `${e.clientX}px`;
@@ -61,6 +63,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
 
+  // LIGHTBOX LOGIC
+  const lightbox = document.getElementById('image-lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const closeLightbox = document.getElementById('close-lightbox');
+  const imagePopTrigger = document.getElementById('image-pop-trigger');
+  const monthImage = document.getElementById('month-image');
+
+  imagePopTrigger.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents the calendar from turning the page
+    lightboxImg.src = monthImage.src;
+    lightbox.classList.remove('hidden');
+    setTimeout(() => lightbox.classList.add('active'), 10);
+  });
+
+  closeLightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+    setTimeout(() => lightbox.classList.add('hidden'), 300);
+  });
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox.click(); // Close if clicking outside the image
+  });
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
   function spawnCrows() {
@@ -88,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   spawnCrows();
 
-  // --- 2. INTERACTIVE TAP TO SHATTER LOGIC (FIXED) ---
+  // --- 2. INTERACTIVE TAP TO SHATTER LOGIC ---
   let tapCount = 0;
   
   masterFrame.addEventListener('pointerdown', (e) => {
@@ -111,13 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function triggerOverride() {
     masterFrame.classList.add('shattering');
-    globalUI.style.opacity = '0'; // Hide UI during shatter
+    globalUI.style.opacity = '0'; 
     
     body.classList.remove('theme-sylus-bg');
     body.classList.add('theme-caleb-bg');
 
     setTimeout(() => {
-      // Shards have flown, gracefully swap phases
       phaseSylus.classList.remove('active');
       phaseSylus.classList.add('hidden');
       
@@ -125,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
       calebBgElements.style.display = 'block';
       spawnPlanesAndApples();
       
-      // Smooth fade to Caleb Box
       masterFrame.style.opacity = '0';
       
       setTimeout(() => {
@@ -133,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         masterFrame.classList.add('blue-glass');
         innerGlassPane.style.opacity = '1';
         
-        void masterFrame.offsetWidth; // trigger reflow
+        void masterFrame.offsetWidth; 
         
         masterFrame.style.opacity = '1';
-        globalUI.style.opacity = '1'; // Bring UI back
+        globalUI.style.opacity = '1'; 
         
         phaseGlitch.classList.remove('hidden');
         phaseGlitch.classList.add('active');
@@ -144,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }, 1200);
 
-    // End Glitch, show Caleb
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseGlitch.classList.add('hidden');
@@ -209,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. FLIPPING TABLE CALENDAR LOGIC ---
+  // --- 4. FLIPPING TABLE CALENDAR (Tap & Swipe) ---
   const months = [
     "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", 
     "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025",
@@ -221,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const calendarContainer = document.getElementById('calendar-container');
   const calendarPage = document.getElementById('calendar-page');
   const monthLabel = document.getElementById('month-label');
-  const monthImage = document.getElementById('month-image');
   const calInstruction = document.getElementById('calendar-instruction');
 
   function initCalendar() {
@@ -235,10 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
     monthImage.onerror = function() { this.src = 'placeholder.jpg'; };
 
     if (currentMonthIndex === months.length - 1) {
-      calInstruction.innerText = "SWIPE UP TO BURN THE PAST";
+      calInstruction.innerText = "TAP OR SWIPE TO BURN THE PAST";
       calInstruction.style.color = "#ff4d4d";
     } else {
-      calInstruction.innerText = "Swipe up to turn the page";
+      calInstruction.innerText = "Tap or swipe to turn page";
       calInstruction.style.color = "#aaa";
     }
   }
@@ -246,19 +266,39 @@ document.addEventListener('DOMContentLoaded', () => {
   function enableCalendarSwipe() {
     let startY = 0;
     let isFlipping = false;
+    let hasDragged = false;
 
-    calendarContainer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
+    // Mobile touch
+    calendarContainer.addEventListener('touchstart', e => { 
+      startY = e.touches[0].clientY; 
+      hasDragged = false;
+    }, {passive: true});
+    
+    calendarContainer.addEventListener('touchmove', e => {
+      if(Math.abs(e.touches[0].clientY - startY) > 5) hasDragged = true;
+    }, {passive: true});
+
     calendarContainer.addEventListener('touchend', e => {
       if (isFlipping) return;
-      if (startY - e.changedTouches[0].clientY > 40) { handlePageTurn(); }
+      let endY = e.changedTouches[0].clientY;
+      // If swiped up OR if it was just a tap (no drag)
+      if ((startY - endY > 40) || !hasDragged) { handlePageTurn(); }
     });
 
-    let isDragging = false;
-    calendarContainer.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; });
+    // Desktop mouse
+    let isDraggingMouse = false;
+    calendarContainer.addEventListener('mousedown', e => { 
+      isDraggingMouse = true; 
+      startY = e.clientY; 
+      hasDragged = false;
+    });
+    calendarContainer.addEventListener('mousemove', e => {
+      if(isDraggingMouse && Math.abs(e.clientY - startY) > 5) hasDragged = true;
+    });
     calendarContainer.addEventListener('mouseup', e => {
-      if (!isDragging || isFlipping) return;
-      isDragging = false;
-      if (startY - e.clientY > 40) { handlePageTurn(); }
+      if (!isDraggingMouse || isFlipping) return;
+      isDraggingMouse = false;
+      if ((startY - e.clientY > 40) || !hasDragged) { handlePageTurn(); }
     });
 
     function handlePageTurn() {
