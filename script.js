@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const calebBgElements = document.getElementById('caleb-bg-elements');
   const lockdownOverlay = document.getElementById('lockdown-overlay');
   
-  // Array of all navigable phases (Glitch is handled separately as a transition)
+  // Array of all navigable phases
   const phases = [
     document.getElementById('phase-sylus'),    // 0
     document.getElementById('phase-caleb'),    // 1
@@ -22,14 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   
   let currentPhaseIndex = 0;
-  let maxUnlockedPhase = 0; // Tracks the furthest she has progressed naturally
+  let maxUnlockedPhase = 0; 
+  let musicStarted = false; // Tracks if autoplay has been triggered
 
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
 
+  const bgMusic = document.getElementById('bg-music');
+  const cdPlayer = document.getElementById('cd-player');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+
   // --- 0. GLOBAL UI & NAVIGATION ---
   document.addEventListener('pointerdown', (e) => {
+    // START AUTOPLAY ON FIRST TAP
+    if (!musicStarted) {
+        bgMusic.play().catch(err => console.log("Audio waiting for stronger interaction:", err));
+        cdPlayer.classList.remove('paused');
+        playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        musicStarted = true;
+    }
+
     if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.closest('.protocol-card') || e.target.id === 'fingerprint-btn' || e.target.tagName === 'TEXTAREA') return;
+    
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
     ripple.style.left = `${e.clientX}px`;
@@ -49,10 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const bgMusic = document.getElementById('bg-music');
-  const cdPlayer = document.getElementById('cd-player');
   const musicMenu = document.getElementById('music-menu');
-  const playPauseBtn = document.getElementById('play-pause-btn');
   const volSlider = document.getElementById('volume-slider');
 
   cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
@@ -60,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bgMusic.paused) {
       bgMusic.play(); cdPlayer.classList.remove('paused');
       playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      musicStarted = true;
     } else {
       bgMusic.pause(); cdPlayer.classList.add('paused');
       playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
@@ -69,23 +81,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // NAVIGATION LOGIC
   function updateNavButtons() {
-    // Show/Hide Prev
     if (currentPhaseIndex > 0) prevBtn.classList.remove('hidden');
     else prevBtn.classList.add('hidden');
 
-    // Show/Hide Next (only if she has naturally unlocked it)
     if (currentPhaseIndex < maxUnlockedPhase && currentPhaseIndex < phases.length - 1) {
         nextBtn.classList.remove('hidden');
     } else {
         nextBtn.classList.add('hidden');
     }
 
-    // Never show nav arrows on final Dossier or during shatter glitch
     if (currentPhaseIndex === 7 || masterFrame.classList.contains('shattering')) {
         nextBtn.classList.add('hidden');
     }
 
-    // Trigger Letter Animation fresh every time she visits Phase 5
     if (currentPhaseIndex === 5) {
         playLetterAnimation();
     }
@@ -109,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         phases[currentPhaseIndex].classList.remove('hidden');
         phases[currentPhaseIndex].classList.add('active');
         
-        // Morph the box back to Sylus Red if we go to index 0
         if (currentPhaseIndex === 0) {
             masterFrame.classList.remove('blue-glass');
             masterFrame.classList.add('red-glass');
@@ -128,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         phases[currentPhaseIndex].classList.remove('hidden');
         phases[currentPhaseIndex].classList.add('active');
         
-        // Restore Caleb Blue if moving past Sylus
         if (currentPhaseIndex > 0) {
             masterFrame.classList.remove('red-glass');
             masterFrame.classList.add('blue-glass');
@@ -250,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
       phaseGlitch.classList.remove('active');
       phaseGlitch.classList.add('hidden');
       
-      // Officially move to Caleb Phase
       currentPhaseIndex = 1;
       maxUnlockedPhase = 1;
       phases[1].classList.remove('hidden');
@@ -278,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadQuestion() {
     if (currentQ >= quizData.length) {
-      advancePhase(); // Go to Calendar
+      advancePhase(); 
       initCalendar();
       return;
     }
@@ -308,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Load the first question immediately in the background
   loadQuestion();
 
 
@@ -337,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('month-image').onerror = function() { this.src = 'placeholder.jpg'; };
 
     if (currentMonthIndex === months.length - 1) {
-      calInstruction.innerText = "TAP OR SWIPE TO BURN THE PAST";
+      calInstruction.innerText = "SWIPE TO BURN THE PAST. THE FUTURE IS OURS.";
       calInstruction.style.color = "#ff4d4d";
     } else {
       calInstruction.innerText = "Tap or swipe to turn page";
@@ -416,9 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncTimer = setInterval(() => {
       textStage++;
-      if(textStage === 1) { text1.innerText = "Sylus can give you danger in a simulation, Mini."; text1.classList.add('visible'); } 
-      else if (textStage === 2) { text2.innerText = "But he can't feel it when your breath catches. I can."; text2.classList.add('visible'); } 
-      else if (textStage === 3) { text3.innerText = "Game over. My turn."; text3.classList.add('visible'); } 
+      if(textStage === 1) { text1.innerText = "A simulation can only mimic danger, Mini."; text1.classList.add('visible'); } 
+      else if (textStage === 2) { text2.innerText = "It can't feel your pulse race or your breath catch. But I can."; text2.classList.add('visible'); } 
+      else if (textStage === 3) { text3.innerText = "Simulation terminated. You're mine now."; text3.classList.add('visible'); } 
       else if (textStage === 5) {
         clearInterval(syncTimer);
         advancePhase(); // Go to Anniversary Letter
@@ -441,28 +445,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let letterTimers = [];
 
   function playLetterAnimation() {
-    // Clear old timers if she navigated quickly
     letterTimers.forEach(t => clearTimeout(t));
     letterTimers = [];
 
-    // Reset Pill State
     document.getElementById('red-pill').classList.remove('burst', 'hidden');
     document.getElementById('blue-pill').classList.remove('burst', 'hidden');
     document.getElementById('pill-container').classList.add('hidden');
     document.getElementById('pill-popup').classList.add('hidden');
     document.getElementById('pill-answer').value = "";
     
-    // Reset Text Lines
     const lines = document.querySelectorAll('.letter-line');
     lines.forEach(line => line.classList.remove('visible'));
     
-    // Staggered Fade In
     lines.forEach((line, index) => {
         let t = setTimeout(() => { line.classList.add('visible'); }, 800 * (index + 1));
         letterTimers.push(t);
     });
     
-    // Fade in Pills
     let finalT = setTimeout(() => {
         const pContainer = document.getElementById('pill-container');
         pContainer.classList.remove('hidden');
@@ -471,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
     letterTimers.push(finalT);
   }
 
-  // Global function for the pill buttons
   window.choosePill = function(color) {
       const red = document.getElementById('red-pill');
       const blue = document.getElementById('blue-pill');
@@ -502,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 7. FINALE & INTIMATE DOSSIER ---
-  document.getElementById('btn-claim').addEventListener('click', advancePhase); // Go to Dossier
+  document.getElementById('btn-claim').addEventListener('click', advancePhase);
 
   window.selectProtocol = function(card) {
     const isExpanded = card.classList.contains('expanded');
