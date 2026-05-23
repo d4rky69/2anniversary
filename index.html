@@ -117,8 +117,56 @@
         <div class="finale-content">
             <h1 class="neon-cursive">Happy 2nd Anniversary</h1>
             <h3 class="neon-sub">FOR MY MINI</h3>
-            <button class="galaxy-btn" onclick="window.location.href='mailto:your-email@gmail.com?subject=I love you Caleb'">CLAIM YOUR CALEB</button>
+            <button id="btn-claim" class="galaxy-btn">CLAIM YOUR CALEB</button>
         </div>
+      </div>
+
+      <div id="phase-dossier" class="box-content phase hidden">
+        <div class="tech-header" style="color: #ff9f43; border-color: rgba(255, 159, 67, 0.3); text-shadow: 0 0 15px rgba(255, 159, 67, 0.5);">CLASSIFIED ITINERARY</div>
+        <p class="caleb-text" style="text-align: center; margin-bottom: 25px;">"I told you I was late because I was preparing something. Choose your protocol for tonight, Sweetheart."</p>
+        
+        <div class="dossier-options">
+          
+          <div class="protocol-card" onclick="selectProtocol(this)">
+            <div class="protocol-header">
+              <i class="fa-solid fa-lock"></i>
+              <span class="protocol-title">PROTOCOL: SENSORY DEPRIVATION</span>
+            </div>
+            <div class="protocol-body">
+              <p>A blindfold. My hands. Complete surrender. Let's see how well you trust your real-life Caleb.</p>
+              <button class="initiate-btn">INITIATE SEQUENCE</button>
+            </div>
+          </div>
+
+          <div class="protocol-card" onclick="selectProtocol(this)">
+            <div class="protocol-header">
+              <i class="fa-solid fa-fire-flame-curved"></i>
+              <span class="protocol-title">PROTOCOL: DEEP RESONANCE</span>
+            </div>
+            <div class="protocol-body">
+              <p>Slow. Agonizingly intimate. We don't stop until every thought of Sylus is completely erased from your mind.</p>
+              <button class="initiate-btn">INITIATE SEQUENCE</button>
+            </div>
+          </div>
+
+          <div class="protocol-card" onclick="selectProtocol(this)">
+            <div class="protocol-header">
+              <i class="fa-solid fa-handcuffs"></i>
+              <span class="protocol-title">PROTOCOL: RETRIBUTION</span>
+            </div>
+            <div class="protocol-body">
+              <p>I was two days late. Tonight, you get to punish me... or maybe I punish you for looking at other guys on our anniversary.</p>
+              <button class="initiate-btn">INITIATE SEQUENCE</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="lockdown-overlay" class="lockdown-overlay hidden">
+        <i class="fa-solid fa-check-double lockdown-icon"></i>
+        <h2 class="lockdown-title">PROTOCOL LOCKED</h2>
+        <p class="lockdown-text">Put your phone away.<br>I am waiting for you.</p>
       </div>
 
     </div> </div> <div id="image-lightbox" class="lightbox hidden">
