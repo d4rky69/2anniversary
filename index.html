@@ -40,7 +40,7 @@
       
       <audio id="bg-music" src="your-song.mp3" loop></audio>
 
-      <div id="phase-sylus" class="box-content active">
+      <div id="phase-sylus" class="box-content phase active">
         <div class="sylus-gif-wrapper">
           <img src="sylus-aesthetic.gif" alt="" class="sylus-gif" onerror="this.style.display='none'">
         </div>
@@ -104,12 +104,32 @@
         <div class="sync-container">
           <i class="fa-solid fa-fingerprint fingerprint-icon" id="fingerprint-btn"></i>
           <p class="sync-instruction pulse-text" id="sync-status">Identity verified. Press and hold to sync.</p>
-          
           <div class="monologue-container">
             <p class="sync-text" id="sync-text-1"></p>
             <p class="sync-text" id="sync-text-2"></p>
             <p class="sync-text" id="sync-text-3"></p>
           </div>
+        </div>
+      </div>
+
+      <div id="phase-letter" class="box-content phase hidden">
+        <div class="letter-container">
+          <p class="letter-line line-1">My dearest Mini,</p>
+          <p class="letter-line line-2">These past two years have been the most incredible journey of my life.</p>
+          <p class="letter-line line-3">You are my safe place, my chaos, and my absolute everything.</p>
+          <p class="letter-line line-4">But before we move forward...</p>
+          <p class="letter-line line-5" style="color: #64c8ff; font-weight: 700;">You have to make a choice.</p>
+        </div>
+        
+        <div class="pill-container hidden" id="pill-container">
+          <div class="pill red-pill" id="red-pill" onclick="choosePill('red')"></div>
+          <div class="pill blue-pill" id="blue-pill" onclick="choosePill('blue')"></div>
+        </div>
+
+        <div class="pill-popup hidden" id="pill-popup">
+          <p id="pill-question" class="pill-question"></p>
+          <textarea id="pill-answer" class="aesthetic-input" placeholder="Tell me everything, sweetheart..."></textarea>
+          <button class="action-btn submit-pill" onclick="submitPill()">Submit & Proceed</button>
         </div>
       </div>
 
@@ -126,7 +146,6 @@
         <p class="caleb-text" style="text-align: center; margin-bottom: 25px;">"I told you I was late because I was preparing something. Choose your protocol for tonight, Sweetheart."</p>
         
         <div class="dossier-options">
-          
           <div class="protocol-card" onclick="selectProtocol(this)">
             <div class="protocol-header">
               <i class="fa-solid fa-lock"></i>
@@ -159,8 +178,12 @@
               <button class="initiate-btn">INITIATE SEQUENCE</button>
             </div>
           </div>
-
         </div>
+      </div>
+
+      <div class="nav-controls">
+        <button id="prev-btn" class="nav-btn hidden"><i class="fa-solid fa-chevron-left"></i></button>
+        <button id="next-btn" class="nav-btn hidden"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div id="lockdown-overlay" class="lockdown-overlay hidden">
