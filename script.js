@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Elements
   const body = document.body;
-  const sylusFrame = document.getElementById('phase-sylus');
-  const masterFrame = document.getElementById('master-frame');
+  const phaseSylus = document.getElementById('phase-sylus'); // The inner Sylus content
+  const masterFrame = document.getElementById('master-frame'); // The physical glass box
   const crowsContainer = document.getElementById('crows-container');
   const calebBgElements = document.getElementById('caleb-bg-elements');
   
@@ -18,9 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const tapInstruction = document.getElementById('tap-instruction');
   const tauntBox = document.getElementById('taunt-message');
 
-  // --- 0. GLOBAL UI (Ripples, Fullscreen, Music) ---
-  document.addEventListener('click', (e) => {
+  // --- 0. GLOBAL UI (Instant Ripples, Fullscreen, Music) ---
+  
+  // Changed to 'pointerdown' for instant mobile response
+  document.addEventListener('pointerdown', (e) => {
+    // Prevent ripple if she is clicking UI buttons or the fingerprint scanner
     if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.id === 'fingerprint-btn') return;
+    
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
     ripple.style.left = `${e.clientX}px`;
@@ -47,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const volSlider = document.getElementById('volume-slider');
 
   cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
+  
   playPauseBtn.addEventListener('click', () => {
     if (bgMusic.paused) {
       bgMusic.play(); cdPlayer.classList.remove('paused');
@@ -56,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
     }
   });
+  
   volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
 
 
@@ -85,17 +91,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   spawnCrows();
 
-  // --- 2. INTERACTIVE TAP TO SHATTER LOGIC ---
+  // --- 2. INTERACTIVE TAP TO SHATTER LOGIC (FIXED) ---
   let tapCount = 0;
-  sylusFrame.addEventListener('click', () => {
-    if (tapCount >= 3) return; 
+  
+  // Attach directly to the Master Frame for 100% reliable tapping
+  masterFrame.addEventListener('pointerdown', (e) => {
+    // Stop if clicking UI, or if taps are done, or if Sylus isn't on screen
+    if (e.target.closest('.global-ui') || tapCount >= 3 || !phaseSylus.classList.contains('active')) return; 
+    
     tapCount++;
+    
+    // Instant physical bounce effect
     masterFrame.style.transform = 'scale(0.96)';
     setTimeout(() => { masterFrame.style.transform = 'scale(1)'; }, 150);
 
-    if (tapCount === 1) { tapInstruction.innerText = "Tap 2 more times..."; } 
-    else if (tapCount === 2) { tapInstruction.innerText = "One more..."; tapInstruction.style.color = "#ff4d4d"; } 
-    else if (tapCount === 3) { tapInstruction.innerText = "SYSTEM CRITICAL"; triggerOverride(); }
+    if (tapCount === 1) { 
+        tapInstruction.innerText = "Tap 2 more times..."; 
+    } 
+    else if (tapCount === 2) { 
+        tapInstruction.innerText = "One more..."; 
+        tapInstruction.style.color = "#ff4d4d"; 
+    } 
+    else if (tapCount === 3) { 
+        tapInstruction.innerText = "SYSTEM CRITICAL"; 
+        triggerOverride(); 
+    }
   });
 
   function triggerOverride() {
@@ -107,13 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
     phaseGlitch.classList.add('active');
     
     setTimeout(() => {
-      sylusFrame.classList.remove('active');
-      sylusFrame.classList.add('hidden');
+      phaseSylus.classList.remove('active');
+      phaseSylus.classList.add('hidden');
+      
       crowsContainer.style.display = 'none';
       calebBgElements.style.display = 'block';
       spawnPlanesAndApples();
       
-      // Morph the main box to Caleb styling
+      // Morph the shattered red box into the pristine blue box
       masterFrame.classList.remove('shattering', 'red-glass');
       masterFrame.classList.add('blue-glass');
     }, 1200);
@@ -182,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. FLIPPING TABLE CALENDAR (Smoother Swipe) ---
+  // --- 4. FLIPPING TABLE CALENDAR LOGIC ---
   const months = [
     "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", 
     "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025",
@@ -288,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function startSync(e) {
-    e.preventDefault(); // Prevents default browser behaviors like highlighting
+    e.preventDefault(); 
     syncStatus.innerText = "Syncing... Do not let go.";
     syncStatus.style.color = "#00ff41";
     
@@ -307,11 +328,10 @@ document.addEventListener('DOMContentLoaded', () => {
         text3.innerText = "Game over. My turn.";
         text3.classList.add('visible');
       } else if (textStage === 5) {
-        // Hold for a second after text finishes, then trigger finale
         clearInterval(syncTimer);
         triggerFinale();
       }
-    }, 1200); // Reveals a new line every 1.2 seconds she holds
+    }, 1200); 
   }
 
   function stopSync() {
@@ -323,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       text1.classList.remove('visible');
       text2.classList.remove('visible');
       text3.classList.remove('visible');
-      if(navigator.vibrate) navigator.vibrate(0); // Stop vibration
+      if(navigator.vibrate) navigator.vibrate(0); 
     }
   }
 
