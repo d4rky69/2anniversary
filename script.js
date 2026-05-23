@@ -9,6 +9,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const calebBgElements = document.getElementById('caleb-bg-elements');
   const lockdownOverlay = document.getElementById('lockdown-overlay');
   
+  // Audio Elements
+  const bgMusic = document.getElementById('bg-music');
+  const cdPlayer = document.getElementById('cd-player');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  let musicStarted = false; 
+
+  // Startup Screen Logic (Bypasses Autoplay Restrictions)
+  const startupScreen = document.getElementById('startup-screen');
+  const startBtn = document.getElementById('start-btn');
+
+  startBtn.addEventListener('click', () => {
+      // 1. Play music immediately on this direct user interaction
+      bgMusic.play().then(() => {
+          cdPlayer.classList.remove('paused');
+          playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+          musicStarted = true;
+      }).catch(err => console.log("Audio play failed:", err));
+
+      // 2. Hide startup screen
+      startupScreen.classList.add('hidden');
+      setTimeout(() => {
+          startupScreen.style.display = 'none';
+      }, 800);
+  });
+
   // Array of all navigable phases
   const phases = [
     document.getElementById('phase-sylus'),    // 0
@@ -23,26 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   let currentPhaseIndex = 0;
   let maxUnlockedPhase = 0; 
-  let musicStarted = false; // Tracks if autoplay has been triggered
 
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
 
-  const bgMusic = document.getElementById('bg-music');
-  const cdPlayer = document.getElementById('cd-player');
-  const playPauseBtn = document.getElementById('play-pause-btn');
-
   // --- 0. GLOBAL UI & NAVIGATION ---
   document.addEventListener('pointerdown', (e) => {
-    // START AUTOPLAY ON FIRST TAP
-    if (!musicStarted) {
-        bgMusic.play().catch(err => console.log("Audio waiting for stronger interaction:", err));
-        cdPlayer.classList.remove('paused');
-        playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-        musicStarted = true;
-    }
-
-    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.closest('.protocol-card') || e.target.id === 'fingerprint-btn' || e.target.tagName === 'TEXTAREA') return;
+    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.closest('.protocol-card') || e.target.id === 'fingerprint-btn' || e.target.tagName === 'TEXTAREA' || e.target.id === 'start-btn') return;
     
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
@@ -145,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-
   // LIGHTBOX LOGIC
   const lightbox = document.getElementById('image-lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
@@ -166,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox.click(); 
   });
-
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
   function spawnCrows() {
@@ -193,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1800);
   }
   spawnCrows();
-
 
   // --- 2. INTERACTIVE TAP TO SHATTER LOGIC ---
   let tapCount = 0;
@@ -266,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-proceed').addEventListener('click', advancePhase);
 
-
   // --- 3. INTIMATE QUIZ LOGIC ---
   const quizData = [
     { q: "Where would I kiss you the most?", options: ["On your neck", "On your lips", "On your feet"] },
@@ -314,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   loadQuestion();
-
 
   // --- 4. FLIPPING TABLE CALENDAR ---
   const months = [
@@ -394,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 350); 
     }
   }
-
 
   // --- 5. PHYSICAL SYNC LOGIC ---
   const fingerprintBtn = document.getElementById('fingerprint-btn');
