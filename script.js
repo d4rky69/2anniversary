@@ -2,29 +2,25 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Elements
   const body = document.body;
-  const sylusFrame = document.getElementById('sylus-frame');
-  const calebFrame = document.getElementById('caleb-frame');
+  const sylusFrame = document.getElementById('phase-sylus');
+  const masterFrame = document.getElementById('master-frame');
   const crowsContainer = document.getElementById('crows-container');
   const calebBgElements = document.getElementById('caleb-bg-elements');
-  const finaleScreen = document.getElementById('finale-screen');
   
   const phaseGlitch = document.getElementById('phase-glitch');
   const phaseCaleb = document.getElementById('phase-caleb');
   const phaseFirewall = document.getElementById('phase-firewall');
-  const phasePhotoStack = document.getElementById('phase-photo-stack');
-  const cardStack = document.getElementById('card-stack');
+  const phaseCalendar = document.getElementById('phase-calendar');
+  const phaseSync = document.getElementById('phase-sync');
+  const phaseFinale = document.getElementById('phase-finale');
   
   const btnProceed = document.getElementById('btn-proceed');
   const tapInstruction = document.getElementById('tap-instruction');
   const tauntBox = document.getElementById('taunt-message');
 
   // --- 0. GLOBAL UI (Ripples, Fullscreen, Music) ---
-  
-  // Tap Ripples
   document.addEventListener('click', (e) => {
-    // Prevent ripple on UI buttons to avoid visual mess
-    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT') return;
-    
+    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.id === 'fingerprint-btn') return;
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
     ripple.style.left = `${e.clientX}px`;
@@ -33,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => ripple.remove(), 600);
   });
 
-  // Fullscreen Logic
   const fullscreenBtn = document.getElementById('fullscreen-btn');
   fullscreenBtn.addEventListener('click', () => {
     if (!document.fullscreenElement) {
@@ -45,32 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Music Player Logic
   const bgMusic = document.getElementById('bg-music');
   const cdPlayer = document.getElementById('cd-player');
   const musicMenu = document.getElementById('music-menu');
   const playPauseBtn = document.getElementById('play-pause-btn');
   const volSlider = document.getElementById('volume-slider');
 
-  cdPlayer.addEventListener('click', () => {
-    musicMenu.classList.toggle('hidden');
-  });
-
+  cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
   playPauseBtn.addEventListener('click', () => {
     if (bgMusic.paused) {
-      bgMusic.play();
-      cdPlayer.classList.remove('paused');
+      bgMusic.play(); cdPlayer.classList.remove('paused');
       playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     } else {
-      bgMusic.pause();
-      cdPlayer.classList.add('paused');
+      bgMusic.pause(); cdPlayer.classList.add('paused');
       playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
     }
   });
-
-  volSlider.addEventListener('input', (e) => {
-    bgMusic.volume = e.target.value;
-  });
+  volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
 
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
@@ -104,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
   sylusFrame.addEventListener('click', () => {
     if (tapCount >= 3) return; 
     tapCount++;
-    sylusFrame.style.transform = 'scale(0.95)';
-    setTimeout(() => { sylusFrame.style.transform = 'scale(1)'; }, 150);
+    masterFrame.style.transform = 'scale(0.96)';
+    setTimeout(() => { masterFrame.style.transform = 'scale(1)'; }, 150);
 
     if (tapCount === 1) { tapInstruction.innerText = "Tap 2 more times..."; } 
     else if (tapCount === 2) { tapInstruction.innerText = "One more..."; tapInstruction.style.color = "#ff4d4d"; } 
@@ -113,64 +99,61 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function triggerOverride() {
-    sylusFrame.classList.add('shattering');
+    masterFrame.classList.add('shattering');
     body.classList.remove('theme-sylus-bg');
     body.classList.add('theme-caleb-bg');
 
-    calebFrame.classList.remove('hidden');
-    calebFrame.classList.add('active-frame');
+    phaseGlitch.classList.remove('hidden');
     phaseGlitch.classList.add('active');
     
     setTimeout(() => {
-      sylusFrame.style.display = 'none';
+      sylusFrame.classList.remove('active');
+      sylusFrame.classList.add('hidden');
       crowsContainer.style.display = 'none';
       calebBgElements.style.display = 'block';
       spawnPlanesAndApples();
-    }, 1500);
+      
+      // Morph the main box to Caleb styling
+      masterFrame.classList.remove('shattering', 'red-glass');
+      masterFrame.classList.add('blue-glass');
+    }, 1200);
 
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
+      phaseGlitch.classList.add('hidden');
+      phaseCaleb.classList.remove('hidden');
       phaseCaleb.classList.add('active');
     }, 2200); 
   }
 
   btnProceed.addEventListener('click', () => {
     phaseCaleb.classList.remove('active');
+    phaseCaleb.classList.add('hidden');
+    phaseFirewall.classList.remove('hidden');
     phaseFirewall.classList.add('active');
     loadQuestion();
   });
 
   // --- 3. INTIMATE QUIZ LOGIC ---
   const quizData = [
-    {
-      q: "Where would I kiss you the most?",
-      options: ["On your neck", "On your lips", "On your feet"]
-    },
-    {
-      q: "What is my absolute favorite thing to do when we are alone in the dark?",
-      options: ["Run my hands all over you", "Just cuddle and fall asleep", "Watch a movie in silence"]
-    },
-    {
-      q: "What's my favorite spot to leave a mark to remind everyone you're mine?",
-      options: ["Right on your collarbone", "On your cheek", "On your hand"]
-    }
+    { q: "Where would I kiss you the most?", options: ["On your neck", "On your lips", "On your feet"] },
+    { q: "What is my absolute favorite thing to do when we are alone in the dark?", options: ["Run my hands all over you", "Just cuddle and fall asleep", "Watch a movie in silence"] },
+    { q: "What's my favorite spot to leave a mark to remind everyone you're mine?", options: ["Right on your collarbone", "On your cheek", "On your hand"] }
   ];
 
   let currentQ = 0;
   const quizProgress = document.getElementById('quiz-progress');
   const quizQuestion = document.getElementById('quiz-question');
   const quizOptionsBox = document.getElementById('quiz-options');
-  const taunts = [
-    "Try again, Mini. Keep your eyes on me.",
-    "Wrong. Are you even trying? Don't make me come over there.",
-    "Not quite, sweetheart. I expect better memory from you."
-  ];
+  const taunts = ["Try again, Mini. Keep your eyes on me.", "Wrong. Are you even trying?", "Not quite, sweetheart."];
 
   function loadQuestion() {
     if (currentQ >= quizData.length) {
-      calebFrame.style.display = 'none';
-      phasePhotoStack.classList.remove('hidden');
-      initPhotoStack();
+      phaseFirewall.classList.remove('active');
+      phaseFirewall.classList.add('hidden');
+      phaseCalendar.classList.remove('hidden');
+      phaseCalendar.classList.add('active');
+      initCalendar();
       return;
     }
 
@@ -191,135 +174,164 @@ document.addEventListener('DOMContentLoaded', () => {
   function checkAnswer(selectedIndex) {
     if (selectedIndex === 0) { 
       tauntBox.style.color = "#00ff41";
-      tauntBox.style.textShadow = "0 0 10px rgba(0,255,65,0.5)";
       tauntBox.innerText = "Good girl. Firewall breached.";
-      setTimeout(() => {
-        currentQ++;
-        loadQuestion();
-      }, 1200);
+      setTimeout(() => { currentQ++; loadQuestion(); }, 1200);
     } else {
       tauntBox.style.color = "#ff4d4d";
-      tauntBox.style.textShadow = "0 0 10px rgba(255,71,87,0.5)";
       tauntBox.innerText = taunts[Math.floor(Math.random() * taunts.length)];
     }
   }
 
-  // --- 4. OPTIMIZED INTERACTIVE PHOTO STACK LOGIC ---
-  const totalPhotos = 25; 
-  let cards = [];
+  // --- 4. FLIPPING TABLE CALENDAR (Smoother Swipe) ---
+  const months = [
+    "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", 
+    "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025",
+    "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025",
+    "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026"
+  ];
   
-  function initPhotoStack() {
-    for (let i = totalPhotos - 1; i >= 0; i--) {
-      let card = document.createElement('div');
-      card.className = 'photo-card';
-      card.dataset.index = i;
-      
-      let img = document.createElement('img');
-      img.src = `${i}.jpg`; // Expects 0.jpg through 24.jpg
-      img.onerror = function() { this.src = 'placeholder.jpg'; }; 
-      card.appendChild(img);
-      
-      let rotation = Math.floor(Math.random() * 16) - 8; 
-      let xOffset = Math.floor(Math.random() * 16) - 8; 
-      let yOffset = Math.floor(Math.random() * 16) - 8;
-      
-      let baseTransform = `translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg)`;
-      card.dataset.baseTransform = baseTransform;
-      card.style.transform = baseTransform;
-      card.style.zIndex = totalPhotos - i;
-      
-      cardStack.appendChild(card);
-      cards.push(card);
-    }
-    
-    cards.reverse();
-    
-    cards.forEach((card, index) => {
-      setTimeout(() => {
-        card.classList.add('drop-in');
-        setTimeout(() => {
-          card.classList.remove('drop-in');
-          card.style.opacity = 1; 
-        }, 600);
-      }, (totalPhotos - index) * 80); 
-    });
+  let currentMonthIndex = 0;
+  const calendarContainer = document.getElementById('calendar-container');
+  const calendarPage = document.getElementById('calendar-page');
+  const monthLabel = document.getElementById('month-label');
+  const monthImage = document.getElementById('month-image');
+  const calInstruction = document.getElementById('calendar-instruction');
 
-    setTimeout(enableDragLogic, totalPhotos * 80 + 600);
+  function initCalendar() {
+    updateCalendarUI();
+    enableCalendarSwipe();
   }
 
-  function enableDragLogic() {
-    let activeCardIndex = 0;
-    
-    function attachDrag(card) {
-      if (!card) return;
-      
-      let isDragging = false;
-      let startX = 0, currentX = 0;
-      
-      // Pointer events for ultra-smooth tracking on mobile/desktop
-      card.addEventListener('pointerdown', e => {
-        isDragging = true;
-        startX = e.clientX;
-        card.style.transition = 'none'; 
-        card.style.cursor = 'grabbing';
-        card.setPointerCapture(e.pointerId);
-      });
+  function updateCalendarUI() {
+    monthLabel.innerText = months[currentMonthIndex];
+    monthImage.src = `${currentMonthIndex}.jpg`; 
+    monthImage.onerror = function() { this.src = 'placeholder.jpg'; };
 
-      card.addEventListener('pointermove', e => {
-        if (!isDragging) return;
-        currentX = e.clientX - startX;
-        let dragRotation = currentX * 0.05; 
-        // Moves the card based on finger distance
-        card.style.transform = `${card.dataset.baseTransform} translate(${currentX}px, ${Math.abs(currentX)*0.1}px) rotate(${dragRotation}deg)`;
-      });
-
-      card.addEventListener('pointerup', e => {
-        if (!isDragging) return;
-        isDragging = false;
-        card.style.cursor = 'grab';
-        card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        
-        // Threshold to swipe away
-        if (currentX > 120 || currentX < -120) {
-          handleCardRemoval(card, currentX);
-        } else {
-          // Snap back
-          card.style.transform = card.dataset.baseTransform;
-        }
-        currentX = 0;
-        card.releasePointerCapture(e.pointerId);
-      });
+    if (currentMonthIndex === months.length - 1) {
+      calInstruction.innerText = "SWIPE UP TO BURN THE PAST";
+      calInstruction.style.color = "#ff4d4d";
+    } else {
+      calInstruction.innerText = "Swipe up to turn the page";
+      calInstruction.style.color = "#aaa";
     }
+  }
 
-    function handleCardRemoval(card, throwDistance) {
-      if (activeCardIndex === totalPhotos - 1) {
-        triggerBurnAndFinale(card);
+  function enableCalendarSwipe() {
+    let startY = 0;
+    let isFlipping = false;
+
+    // Mobile touch
+    calendarContainer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
+    calendarContainer.addEventListener('touchend', e => {
+      if (isFlipping) return;
+      if (startY - e.changedTouches[0].clientY > 40) { handlePageTurn(); }
+    });
+
+    // Desktop mouse
+    let isDragging = false;
+    calendarContainer.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; });
+    calendarContainer.addEventListener('mouseup', e => {
+      if (!isDragging || isFlipping) return;
+      isDragging = false;
+      if (startY - e.clientY > 40) { handlePageTurn(); }
+    });
+
+    function handlePageTurn() {
+      if (currentMonthIndex === months.length - 1) {
+        triggerBurnAndSync();
         return;
       }
 
-      // Throw physics
-      let throwX = throwDistance > 0 ? window.innerWidth : -window.innerWidth;
-      card.style.transform = `translate(${throwX}px, 100px) rotate(${throwDistance * 0.1}deg)`;
-      card.style.opacity = '0';
+      isFlipping = true;
+      calendarPage.classList.remove('turn-in');
+      calendarPage.classList.add('turn-out');
       
-      setTimeout(() => { card.remove(); }, 400);
-
-      activeCardIndex++;
-      attachDrag(cards[activeCardIndex]);
+      setTimeout(() => {
+        currentMonthIndex++;
+        updateCalendarUI();
+        
+        calendarPage.classList.remove('turn-out');
+        calendarPage.classList.add('turn-in');
+        
+        setTimeout(() => { isFlipping = false; }, 350); 
+      }, 350); 
     }
-
-    attachDrag(cards[activeCardIndex]);
   }
 
-  function triggerBurnAndFinale(lastCard) {
-    lastCard.style.transform = lastCard.dataset.baseTransform;
-    lastCard.classList.add('burn-effect');
-
+  function triggerBurnAndSync() {
+    calendarContainer.classList.add('burn-effect');
+    calInstruction.style.opacity = '0';
+    
     setTimeout(() => {
-      phasePhotoStack.style.display = 'none';
-      finaleScreen.classList.remove('hidden');
-      setTimeout(() => { finaleScreen.classList.add('active'); }, 50);
-    }, 1800);
+      phaseCalendar.classList.remove('active');
+      phaseCalendar.classList.add('hidden');
+      phaseSync.classList.remove('hidden');
+      phaseSync.classList.add('active');
+      initSyncPhase();
+    }, 1500);
+  }
+
+  // --- 5. PHYSICAL SYNC (The Future Plans) ---
+  const fingerprintBtn = document.getElementById('fingerprint-btn');
+  const syncStatus = document.getElementById('sync-status');
+  const text1 = document.getElementById('sync-text-1');
+  const text2 = document.getElementById('sync-text-2');
+  const text3 = document.getElementById('sync-text-3');
+  
+  let syncTimer;
+  let textStage = 0;
+
+  function initSyncPhase() {
+    fingerprintBtn.addEventListener('pointerdown', startSync);
+    fingerprintBtn.addEventListener('pointerup', stopSync);
+    fingerprintBtn.addEventListener('pointerleave', stopSync); // In case finger slides off
+  }
+
+  function startSync(e) {
+    e.preventDefault(); // Prevents default browser behaviors like highlighting
+    syncStatus.innerText = "Syncing... Do not let go.";
+    syncStatus.style.color = "#00ff41";
+    
+    // Vibrate phone if supported
+    if(navigator.vibrate) navigator.vibrate([100, 100, 100, 100, 100, 100]); 
+
+    syncTimer = setInterval(() => {
+      textStage++;
+      if(textStage === 1) {
+        text1.innerText = "Sylus can give you danger in a simulation, Mini.";
+        text1.classList.add('visible');
+      } else if (textStage === 2) {
+        text2.innerText = "But he can't feel it when your breath catches. I can.";
+        text2.classList.add('visible');
+      } else if (textStage === 3) {
+        text3.innerText = "Game over. My turn.";
+        text3.classList.add('visible');
+      } else if (textStage === 5) {
+        // Hold for a second after text finishes, then trigger finale
+        clearInterval(syncTimer);
+        triggerFinale();
+      }
+    }, 1200); // Reveals a new line every 1.2 seconds she holds
+  }
+
+  function stopSync() {
+    clearInterval(syncTimer);
+    if (textStage < 5) { // Only reset if she didn't finish
+      textStage = 0;
+      syncStatus.innerText = "Connection lost. I said don't pull away.";
+      syncStatus.style.color = "#ff4d4d";
+      text1.classList.remove('visible');
+      text2.classList.remove('visible');
+      text3.classList.remove('visible');
+      if(navigator.vibrate) navigator.vibrate(0); // Stop vibration
+    }
+  }
+
+  function triggerFinale() {
+    phaseSync.classList.remove('active');
+    phaseSync.classList.add('hidden');
+    phaseFinale.classList.remove('hidden');
+    phaseFinale.classList.add('active');
   }
 
 });
