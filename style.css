@@ -42,7 +42,7 @@ body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; he
 .blue-glass { background: linear-gradient(135deg, rgba(15, 35, 70, 0.6), rgba(5, 15, 30, 0.8)); backdrop-filter: blur(35px) saturate(200%); border-top: 1px solid rgba(255, 255, 255, 0.4); border-left: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 1px solid rgba(0, 0, 0, 0.9); border-right: 1px solid rgba(0, 0, 0, 0.9); box-shadow: 0 40px 90px rgba(0,0,0,0.98), 0 0 50px rgba(0, 150, 255, 0.15), inset 0 2px 30px rgba(100,200,255,0.15); }
 
 /* GLOBAL UI (Locked inside the box) */
-.global-ui { position: absolute; top: 15px; right: 15px; z-index: 10000; display: flex; align-items: flex-start; gap: 10px; }
+.global-ui { position: absolute; top: 20px; right: 20px; z-index: 10000; display: flex; align-items: flex-start; gap: 12px; }
 .ui-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; font-size: 1rem; }
 .ui-btn:active { transform: scale(0.9); }
 .music-container { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
