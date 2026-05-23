@@ -242,10 +242,11 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .initiate-btn { width: 100%; padding: 12px; box-sizing: border-box; background: rgba(255, 159, 67, 0.2); border: 2px solid #ff9f43; border-radius: 4px; color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; box-shadow: inset 0 0 10px rgba(255, 159, 67, 0.3); }
 .initiate-btn:active { transform: scale(0.97); background: rgba(255, 159, 67, 0.4); }
 
-.lockdown-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20, 0, 0, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+/* --- THE CONTAINED LOCKDOWN OVERLAY --- */
+.lockdown-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 0, 0, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
 .lockdown-overlay.active { opacity: 1; pointer-events: auto; }
 .lockdown-icon { font-size: 4rem; color: #ff4d4d; margin-bottom: 20px; animation: pulseBlink 1.5s infinite; text-shadow: 0 0 20px #ff4d4d; }
-.lockdown-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 5px; color: #fff; margin: 0 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+.lockdown-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 5px; color: #fff; margin: 0 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); text-align: center;}
 .lockdown-text { font-size: 1.1rem; color: #ccc; text-align: center; line-height: 1.6; text-transform: uppercase; letter-spacing: 2px; }
 
 /* TAP RIPPLES */
