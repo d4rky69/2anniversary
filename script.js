@@ -15,24 +15,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const playPauseBtn = document.getElementById('play-pause-btn');
   let musicStarted = false; 
 
-  // Startup Screen Logic (Bypasses Autoplay Restrictions)
+  // Startup Screen Logic (Safeguarded against crashes if you remove it from HTML)
   const startupScreen = document.getElementById('startup-screen');
   const startBtn = document.getElementById('start-btn');
 
-  startBtn.addEventListener('click', () => {
-      // 1. Play music immediately on this direct user interaction
-      bgMusic.play().then(() => {
-          cdPlayer.classList.remove('paused');
-          playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-          musicStarted = true;
-      }).catch(err => console.log("Audio play failed:", err));
+  if (startBtn && startupScreen) {
+      startBtn.addEventListener('click', () => {
+          bgMusic.play().then(() => {
+              cdPlayer.classList.remove('paused');
+              playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+              musicStarted = true;
+          }).catch(err => console.log("Audio play failed:", err));
 
-      // 2. Hide startup screen
-      startupScreen.classList.add('hidden');
-      setTimeout(() => {
-          startupScreen.style.display = 'none';
-      }, 800);
-  });
+          startupScreen.classList.add('hidden');
+          setTimeout(() => {
+              startupScreen.style.display = 'none';
+          }, 800);
+      });
+  }
 
   // Array of all navigable phases
   const phases = [
@@ -54,6 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 0. GLOBAL UI & NAVIGATION ---
   document.addEventListener('pointerdown', (e) => {
+    // If startup screen doesn't exist, try to play audio on first tap anywhere
+    if (!startupScreen && !musicStarted && bgMusic) {
+        bgMusic.play().catch(e => console.log("Browser blocked autoplay."));
+        if(cdPlayer) cdPlayer.classList.remove('paused');
+        if(playPauseBtn) playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        musicStarted = true;
+    }
+
     if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.closest('.protocol-card') || e.target.id === 'fingerprint-btn' || e.target.tagName === 'TEXTAREA' || e.target.id === 'start-btn') return;
     
     const ripple = document.createElement('div');
@@ -65,34 +73,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const fullscreenBtn = document.getElementById('fullscreen-btn');
-  fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => console.log(err));
-      fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
-    } else {
-      document.exitFullscreen();
-      fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
-    }
-  });
+  if (fullscreenBtn) {
+      fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => console.log(err));
+          fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+        } else {
+          document.exitFullscreen();
+          fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+        }
+      });
+  }
 
   const musicMenu = document.getElementById('music-menu');
   const volSlider = document.getElementById('volume-slider');
 
-  cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
-  playPauseBtn.addEventListener('click', () => {
-    if (bgMusic.paused) {
-      bgMusic.play(); cdPlayer.classList.remove('paused');
-      playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-      musicStarted = true;
-    } else {
-      bgMusic.pause(); cdPlayer.classList.add('paused');
-      playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-    }
-  });
-  volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
+  if (cdPlayer && playPauseBtn) {
+      cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
+      playPauseBtn.addEventListener('click', () => {
+        if (bgMusic.paused) {
+          bgMusic.play(); cdPlayer.classList.remove('paused');
+          playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+          musicStarted = true;
+        } else {
+          bgMusic.pause(); cdPlayer.classList.add('paused');
+          playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+      });
+      if(volSlider) volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
+  }
 
   // NAVIGATION LOGIC
   function updateNavButtons() {
+    if(!prevBtn || !nextBtn) return;
     if (currentPhaseIndex > 0) prevBtn.classList.remove('hidden');
     else prevBtn.classList.add('hidden');
 
@@ -112,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function advancePhase() {
+    if(!phases[currentPhaseIndex] || !phases[currentPhaseIndex+1]) return;
     phases[currentPhaseIndex].classList.remove('active');
     phases[currentPhaseIndex].classList.add('hidden');
     currentPhaseIndex++;
@@ -121,41 +135,43 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNavButtons();
   }
 
-  prevBtn.addEventListener('click', () => {
-    if (currentPhaseIndex > 0) {
-        phases[currentPhaseIndex].classList.remove('active');
-        phases[currentPhaseIndex].classList.add('hidden');
-        currentPhaseIndex--;
-        phases[currentPhaseIndex].classList.remove('hidden');
-        phases[currentPhaseIndex].classList.add('active');
-        
-        if (currentPhaseIndex === 0) {
-            masterFrame.classList.remove('blue-glass');
-            masterFrame.classList.add('red-glass');
-            body.classList.remove('theme-caleb-bg');
-            body.classList.add('theme-sylus-bg');
-        }
-        updateNavButtons();
-    }
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if (currentPhaseIndex < maxUnlockedPhase) {
-        phases[currentPhaseIndex].classList.remove('active');
-        phases[currentPhaseIndex].classList.add('hidden');
-        currentPhaseIndex++;
-        phases[currentPhaseIndex].classList.remove('hidden');
-        phases[currentPhaseIndex].classList.add('active');
-        
+  if (prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
         if (currentPhaseIndex > 0) {
-            masterFrame.classList.remove('red-glass');
-            masterFrame.classList.add('blue-glass');
-            body.classList.remove('theme-sylus-bg');
-            body.classList.add('theme-caleb-bg');
+            phases[currentPhaseIndex].classList.remove('active');
+            phases[currentPhaseIndex].classList.add('hidden');
+            currentPhaseIndex--;
+            phases[currentPhaseIndex].classList.remove('hidden');
+            phases[currentPhaseIndex].classList.add('active');
+            
+            if (currentPhaseIndex === 0) {
+                masterFrame.classList.remove('blue-glass');
+                masterFrame.classList.add('red-glass');
+                body.classList.remove('theme-caleb-bg');
+                body.classList.add('theme-sylus-bg');
+            }
+            updateNavButtons();
         }
-        updateNavButtons();
-    }
-  });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentPhaseIndex < maxUnlockedPhase) {
+            phases[currentPhaseIndex].classList.remove('active');
+            phases[currentPhaseIndex].classList.add('hidden');
+            currentPhaseIndex++;
+            phases[currentPhaseIndex].classList.remove('hidden');
+            phases[currentPhaseIndex].classList.add('active');
+            
+            if (currentPhaseIndex > 0) {
+                masterFrame.classList.remove('red-glass');
+                masterFrame.classList.add('blue-glass');
+                body.classList.remove('theme-sylus-bg');
+                body.classList.add('theme-caleb-bg');
+            }
+            updateNavButtons();
+        }
+      });
+  }
 
   // LIGHTBOX LOGIC
   const lightbox = document.getElementById('image-lightbox');
@@ -164,22 +180,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const imagePopTrigger = document.getElementById('image-pop-trigger');
   const monthImage = document.getElementById('month-image');
 
-  imagePopTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    lightboxImg.src = monthImage.src;
-    lightbox.classList.remove('hidden');
-    setTimeout(() => lightbox.classList.add('active'), 10);
-  });
-  closeLightbox.addEventListener('click', () => {
-    lightbox.classList.remove('active');
-    setTimeout(() => lightbox.classList.add('hidden'), 300);
-  });
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox.click(); 
-  });
+  if (imagePopTrigger) {
+      imagePopTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImg.src = monthImage.src;
+        lightbox.classList.remove('hidden');
+        setTimeout(() => lightbox.classList.add('active'), 10);
+      });
+      closeLightbox.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+        setTimeout(() => lightbox.classList.add('hidden'), 300);
+      });
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox.click(); 
+      });
+  }
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
   function spawnCrows() {
+    if(!crowsContainer) return;
     for (let i = 0; i < 5; i++) {
       let crow = document.createElement('div');
       crow.classList.add('crow');
@@ -191,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function spawnPlanesAndApples() {
+    if(!calebBgElements) return;
     const emojis = ['✈️', '🍎', '✈️'];
     setInterval(() => {
       let item = document.createElement('div');
@@ -207,28 +227,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 2. INTERACTIVE TAP TO SHATTER LOGIC ---
   let tapCount = 0;
   
-  masterFrame.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('.global-ui') || tapCount >= 3 || currentPhaseIndex !== 0) return; 
-    
-    const tapInstruction = document.getElementById('tap-instruction');
-    tapCount++;
-    masterFrame.style.transform = 'scale(0.96)';
-    setTimeout(() => { masterFrame.style.transform = 'scale(1)'; }, 150);
+  if (masterFrame) {
+      masterFrame.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('.global-ui') || tapCount >= 3 || currentPhaseIndex !== 0) return; 
+        
+        const tapInstruction = document.getElementById('tap-instruction');
+        tapCount++;
+        masterFrame.style.transform = 'scale(0.96)';
+        setTimeout(() => { masterFrame.style.transform = 'scale(1)'; }, 150);
 
-    if (tapCount === 1) { 
-        tapInstruction.innerText = "Tap 2 more times..."; 
-    } else if (tapCount === 2) { 
-        tapInstruction.innerText = "One more..."; 
-        tapInstruction.style.color = "#ff4d4d"; 
-    } else if (tapCount === 3) { 
-        tapInstruction.innerText = "SYSTEM CRITICAL"; 
-        triggerOverride(); 
-    }
-  });
+        if (tapCount === 1) { 
+            if(tapInstruction) tapInstruction.innerText = "Tap 2 more times..."; 
+        } else if (tapCount === 2) { 
+            if(tapInstruction) {
+                tapInstruction.innerText = "One more..."; 
+                tapInstruction.style.color = "#ff4d4d"; 
+            }
+        } else if (tapCount === 3) { 
+            if(tapInstruction) tapInstruction.innerText = "SYSTEM CRITICAL"; 
+            triggerOverride(); 
+        }
+      });
+  }
 
   function triggerOverride() {
     masterFrame.classList.add('shattering');
-    globalUI.style.opacity = '0'; 
+    if(globalUI) globalUI.style.opacity = '0'; 
     
     body.classList.remove('theme-sylus-bg');
     body.classList.add('theme-caleb-bg');
@@ -239,8 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
       phases[0].classList.remove('active');
       phases[0].classList.add('hidden');
       
-      crowsContainer.style.display = 'none';
-      calebBgElements.style.display = 'block';
+      if(crowsContainer) crowsContainer.style.display = 'none';
+      if(calebBgElements) calebBgElements.style.display = 'block';
       spawnPlanesAndApples();
       
       masterFrame.style.opacity = '0';
@@ -253,17 +277,21 @@ document.addEventListener('DOMContentLoaded', () => {
         void masterFrame.offsetWidth; 
         
         masterFrame.style.opacity = '1';
-        globalUI.style.opacity = '1'; 
+        if(globalUI) globalUI.style.opacity = '1'; 
         
-        phaseGlitch.classList.remove('hidden');
-        phaseGlitch.classList.add('active');
+        if(phaseGlitch) {
+            phaseGlitch.classList.remove('hidden');
+            phaseGlitch.classList.add('active');
+        }
       }, 100); 
 
     }, 1200);
 
     setTimeout(() => {
-      phaseGlitch.classList.remove('active');
-      phaseGlitch.classList.add('hidden');
+      if(phaseGlitch) {
+          phaseGlitch.classList.remove('active');
+          phaseGlitch.classList.add('hidden');
+      }
       
       currentPhaseIndex = 1;
       maxUnlockedPhase = 1;
@@ -273,7 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2800); 
   }
 
-  document.getElementById('btn-proceed').addEventListener('click', advancePhase);
+  const btnProceed = document.getElementById('btn-proceed');
+  if(btnProceed) btnProceed.addEventListener('click', advancePhase);
 
   // --- 3. INTIMATE QUIZ LOGIC ---
   const quizData = [
@@ -290,6 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const taunts = ["Try again, Mini. Keep your eyes on me.", "Wrong. Are you even trying?", "Not quite, sweetheart."];
 
   function loadQuestion() {
+    if (!quizProgress || !quizQuestion || !quizOptionsBox) return;
+
     if (currentQ >= quizData.length) {
       advancePhase(); 
       initCalendar();
@@ -343,6 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateCalendarUI() {
+    if(!monthLabel || !calInstruction) return;
     monthLabel.innerText = months[currentMonthIndex];
     document.getElementById('month-image').src = `${currentMonthIndex}.jpg`; 
     document.getElementById('month-image').onerror = function() { this.src = 'placeholder.jpg'; };
@@ -357,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function enableCalendarSwipe() {
+    if(!calendarContainer) return;
     let startY = 0;
     let isFlipping = false;
     let hasDragged = false;
@@ -413,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let textStage = 0;
 
   function initSyncPhase() {
+    if(!fingerprintBtn) return;
     fingerprintBtn.addEventListener('pointerdown', startSync);
     fingerprintBtn.addEventListener('pointerup', stopSync);
     fingerprintBtn.addEventListener('pointerleave', stopSync); 
@@ -440,9 +474,13 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(syncTimer);
     if (textStage < 5) { 
       textStage = 0;
-      syncStatus.innerText = "Connection lost. I said don't pull away.";
-      syncStatus.style.color = "#ff4d4d";
-      text1.classList.remove('visible'); text2.classList.remove('visible'); text3.classList.remove('visible');
+      if(syncStatus) {
+          syncStatus.innerText = "Connection lost. I said don't pull away.";
+          syncStatus.style.color = "#ff4d4d";
+      }
+      if(text1) text1.classList.remove('visible'); 
+      if(text2) text2.classList.remove('visible'); 
+      if(text3) text3.classList.remove('visible');
       if(navigator.vibrate) navigator.vibrate(0); 
     }
   }
@@ -470,8 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let finalT = setTimeout(() => {
         const pContainer = document.getElementById('pill-container');
-        pContainer.classList.remove('hidden');
-        pContainer.style.opacity = 1;
+        if(pContainer) {
+            pContainer.classList.remove('hidden');
+            pContainer.style.opacity = 1;
+        }
     }, 800 * (lines.length + 1));
     letterTimers.push(finalT);
   }
@@ -502,11 +542,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.submitPill = function() {
-      advancePhase(); // Go to Finale
+      advancePhase(); 
   }
 
   // --- 7. FINALE & INTIMATE DOSSIER ---
-  document.getElementById('btn-claim').addEventListener('click', advancePhase);
+  const btnClaim = document.getElementById('btn-claim');
+  if(btnClaim) btnClaim.addEventListener('click', advancePhase);
 
   window.selectProtocol = function(card) {
     const isExpanded = card.classList.contains('expanded');
@@ -517,8 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.initiate-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation(); 
-      lockdownOverlay.classList.remove('hidden');
-      setTimeout(() => { lockdownOverlay.classList.add('active'); }, 50);
+      if(lockdownOverlay) {
+          lockdownOverlay.classList.remove('hidden');
+          setTimeout(() => { lockdownOverlay.classList.add('active'); }, 50);
+      }
     });
   });
 
