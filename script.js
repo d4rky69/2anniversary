@@ -16,15 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const phaseCalendar = document.getElementById('phase-calendar');
   const phaseSync = document.getElementById('phase-sync');
   const phaseFinale = document.getElementById('phase-finale');
+  const phaseDossier = document.getElementById('phase-dossier');
+  const lockdownOverlay = document.getElementById('lockdown-overlay');
   
   const btnProceed = document.getElementById('btn-proceed');
+  const btnClaim = document.getElementById('btn-claim');
   const tapInstruction = document.getElementById('tap-instruction');
   const tauntBox = document.getElementById('taunt-message');
 
   // --- 0. GLOBAL UI (Instant Ripples, Fullscreen, Music, Lightbox) ---
   document.addEventListener('pointerdown', (e) => {
     // Prevent ripple on buttons, inputs, or the image popup itself
-    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.id === 'fingerprint-btn') return;
+    if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.closest('.lightbox-content') || e.target.closest('.protocol-card') || e.target.id === 'fingerprint-btn') return;
     
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
@@ -83,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox.click(); // Close if clicking outside the image
+    if (e.target === lightbox) closeLightbox.click(); 
   });
 
   // --- 1. SPAWN BACKGROUND AMBIENCE ---
@@ -395,5 +398,31 @@ document.addEventListener('DOMContentLoaded', () => {
     phaseFinale.classList.remove('hidden');
     phaseFinale.classList.add('active');
   }
+
+  // --- 6. INTIMATE DOSSIER TRANSITION ---
+  btnClaim.addEventListener('click', () => {
+    phaseFinale.classList.remove('active');
+    phaseFinale.classList.add('hidden');
+    phaseDossier.classList.remove('hidden');
+    phaseDossier.classList.add('active');
+  });
+
+  // Global function for the protocol buttons
+  window.selectProtocol = function(card) {
+    const isExpanded = card.classList.contains('expanded');
+    // Collapse all
+    document.querySelectorAll('.protocol-card').forEach(c => c.classList.remove('expanded'));
+    // Expand clicked if it wasn't already
+    if (!isExpanded) card.classList.add('expanded');
+  };
+
+  // Global function for initiate sequence
+  document.querySelectorAll('.initiate-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevents collapsing the card
+      lockdownOverlay.classList.remove('hidden');
+      setTimeout(() => { lockdownOverlay.classList.add('active'); }, 50);
+    });
+  });
 
 });
