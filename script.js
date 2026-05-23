@@ -2,11 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Elements
   const body = document.body;
-  const phaseSylus = document.getElementById('phase-sylus'); // The inner Sylus content
-  const masterFrame = document.getElementById('master-frame'); // The physical glass box
+  const masterFrame = document.getElementById('master-frame');
+  const innerGlassPane = document.querySelector('.inner-glass-pane');
+  const globalUI = document.querySelector('.global-ui');
+  
   const crowsContainer = document.getElementById('crows-container');
   const calebBgElements = document.getElementById('caleb-bg-elements');
   
+  const phaseSylus = document.getElementById('phase-sylus');
   const phaseGlitch = document.getElementById('phase-glitch');
   const phaseCaleb = document.getElementById('phase-caleb');
   const phaseFirewall = document.getElementById('phase-firewall');
@@ -19,12 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const tauntBox = document.getElementById('taunt-message');
 
   // --- 0. GLOBAL UI (Instant Ripples, Fullscreen, Music) ---
-  
-  // Changed to 'pointerdown' for instant mobile response
   document.addEventListener('pointerdown', (e) => {
-    // Prevent ripple if she is clicking UI buttons or the fingerprint scanner
     if(e.target.closest('.global-ui') || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.id === 'fingerprint-btn') return;
-    
     const ripple = document.createElement('div');
     ripple.className = 'tap-ripple';
     ripple.style.left = `${e.clientX}px`;
@@ -51,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const volSlider = document.getElementById('volume-slider');
 
   cdPlayer.addEventListener('click', () => { musicMenu.classList.toggle('hidden'); });
-  
   playPauseBtn.addEventListener('click', () => {
     if (bgMusic.paused) {
       bgMusic.play(); cdPlayer.classList.remove('paused');
@@ -61,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
       playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
     }
   });
-  
   volSlider.addEventListener('input', (e) => { bgMusic.volume = e.target.value; });
 
 
@@ -94,25 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 2. INTERACTIVE TAP TO SHATTER LOGIC (FIXED) ---
   let tapCount = 0;
   
-  // Attach directly to the Master Frame for 100% reliable tapping
   masterFrame.addEventListener('pointerdown', (e) => {
-    // Stop if clicking UI, or if taps are done, or if Sylus isn't on screen
     if (e.target.closest('.global-ui') || tapCount >= 3 || !phaseSylus.classList.contains('active')) return; 
     
     tapCount++;
-    
-    // Instant physical bounce effect
     masterFrame.style.transform = 'scale(0.96)';
     setTimeout(() => { masterFrame.style.transform = 'scale(1)'; }, 150);
 
     if (tapCount === 1) { 
         tapInstruction.innerText = "Tap 2 more times..."; 
-    } 
-    else if (tapCount === 2) { 
+    } else if (tapCount === 2) { 
         tapInstruction.innerText = "One more..."; 
         tapInstruction.style.color = "#ff4d4d"; 
-    } 
-    else if (tapCount === 3) { 
+    } else if (tapCount === 3) { 
         tapInstruction.innerText = "SYSTEM CRITICAL"; 
         triggerOverride(); 
     }
@@ -120,13 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function triggerOverride() {
     masterFrame.classList.add('shattering');
+    globalUI.style.opacity = '0'; // Hide UI during shatter
+    
     body.classList.remove('theme-sylus-bg');
     body.classList.add('theme-caleb-bg');
 
-    phaseGlitch.classList.remove('hidden');
-    phaseGlitch.classList.add('active');
-    
     setTimeout(() => {
+      // Shards have flown, gracefully swap phases
       phaseSylus.classList.remove('active');
       phaseSylus.classList.add('hidden');
       
@@ -134,17 +125,32 @@ document.addEventListener('DOMContentLoaded', () => {
       calebBgElements.style.display = 'block';
       spawnPlanesAndApples();
       
-      // Morph the shattered red box into the pristine blue box
-      masterFrame.classList.remove('shattering', 'red-glass');
-      masterFrame.classList.add('blue-glass');
+      // Smooth fade to Caleb Box
+      masterFrame.style.opacity = '0';
+      
+      setTimeout(() => {
+        masterFrame.classList.remove('shattering', 'red-glass');
+        masterFrame.classList.add('blue-glass');
+        innerGlassPane.style.opacity = '1';
+        
+        void masterFrame.offsetWidth; // trigger reflow
+        
+        masterFrame.style.opacity = '1';
+        globalUI.style.opacity = '1'; // Bring UI back
+        
+        phaseGlitch.classList.remove('hidden');
+        phaseGlitch.classList.add('active');
+      }, 100); 
+
     }, 1200);
 
+    // End Glitch, show Caleb
     setTimeout(() => {
       phaseGlitch.classList.remove('active');
       phaseGlitch.classList.add('hidden');
       phaseCaleb.classList.remove('hidden');
       phaseCaleb.classList.add('active');
-    }, 2200); 
+    }, 2800); 
   }
 
   btnProceed.addEventListener('click', () => {
@@ -241,14 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let startY = 0;
     let isFlipping = false;
 
-    // Mobile touch
     calendarContainer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
     calendarContainer.addEventListener('touchend', e => {
       if (isFlipping) return;
       if (startY - e.changedTouches[0].clientY > 40) { handlePageTurn(); }
     });
 
-    // Desktop mouse
     let isDragging = false;
     calendarContainer.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; });
     calendarContainer.addEventListener('mouseup', e => {
@@ -270,10 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         currentMonthIndex++;
         updateCalendarUI();
-        
         calendarPage.classList.remove('turn-out');
         calendarPage.classList.add('turn-in');
-        
         setTimeout(() => { isFlipping = false; }, 350); 
       }, 350); 
     }
@@ -286,13 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       phaseCalendar.classList.remove('active');
       phaseCalendar.classList.add('hidden');
+      
       phaseSync.classList.remove('hidden');
       phaseSync.classList.add('active');
       initSyncPhase();
     }, 1500);
   }
 
-  // --- 5. PHYSICAL SYNC (The Future Plans) ---
+  // --- 5. PHYSICAL SYNC LOGIC ---
   const fingerprintBtn = document.getElementById('fingerprint-btn');
   const syncStatus = document.getElementById('sync-status');
   const text1 = document.getElementById('sync-text-1');
@@ -305,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initSyncPhase() {
     fingerprintBtn.addEventListener('pointerdown', startSync);
     fingerprintBtn.addEventListener('pointerup', stopSync);
-    fingerprintBtn.addEventListener('pointerleave', stopSync); // In case finger slides off
+    fingerprintBtn.addEventListener('pointerleave', stopSync); 
   }
 
   function startSync(e) {
@@ -313,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
     syncStatus.innerText = "Syncing... Do not let go.";
     syncStatus.style.color = "#00ff41";
     
-    // Vibrate phone if supported
     if(navigator.vibrate) navigator.vibrate([100, 100, 100, 100, 100, 100]); 
 
     syncTimer = setInterval(() => {
@@ -336,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function stopSync() {
     clearInterval(syncTimer);
-    if (textStage < 5) { // Only reset if she didn't finish
+    if (textStage < 5) { 
       textStage = 0;
       syncStatus.innerText = "Connection lost. I said don't pull away.";
       syncStatus.style.color = "#ff4d4d";
