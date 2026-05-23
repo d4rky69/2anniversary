@@ -74,8 +74,6 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .phase.active { display: flex; opacity: 1; animation: fadeUp 0.5s forwards; }
 @keyframes fadeUp { from { transform: translateY(15px); } to { transform: translateY(0); } }
 
-.sylus-gif-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; mix-blend-mode: screen; pointer-events: none; }
-.sylus-gif { width: 100%; height: 100%; object-fit: cover; }
 .chibi-glow-sylus, .chibi-glow-caleb { position: relative; border-radius: 50%; margin-top: 10px;}
 .chibi-glow-sylus::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 130px; height: 130px; background: radial-gradient(circle, rgba(255,50,50,0.5) 0%, transparent 70%); z-index: -1; filter: blur(15px); }
 .chibi-glow-caleb::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 130px; height: 130px; background: radial-gradient(circle, rgba(100,200,255,0.4) 0%, transparent 70%); z-index: -1; filter: blur(15px); }
@@ -86,7 +84,29 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 @keyframes angryShake { 0% { transform: rotate(-5deg) scale(1.05); } 100% { transform: rotate(5deg) scale(1.05); } }
 
 .sylus-title { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ff4d4d; text-shadow: 0 0 30px rgba(255, 77, 77, 0.7); margin: 15px 0 10px 0; font-weight: 700; line-height: 1.1; text-align: center;}
-.sylus-subtitle { font-family: 'Cinzel', serif; color: #e0e0e0; font-style: italic; font-size: 1rem; text-align: center; }
+.sylus-subtitle { font-family: 'Cinzel', serif; color: #e0e0e0; font-style: italic; font-size: 1rem; text-align: center; margin-bottom: 5px;}
+
+/* UPDATED SYLUS GIF PLACEHOLDER */
+.sylus-gif-wrapper { 
+    position: relative; 
+    width: 85%; 
+    max-width: 280px; 
+    aspect-ratio: 16 / 9; 
+    margin: 25px auto; 
+    border: 2px solid rgba(255, 77, 77, 0.4); 
+    border-radius: 6px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 15px rgba(255, 77, 77, 0.2); 
+    overflow: hidden; 
+    z-index: 10; 
+}
+.sylus-gif { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    display: block; 
+    filter: brightness(0.8); 
+}
+
 .tap-zone { margin-top: auto; padding-bottom: 10px; text-align: center;}
 .tap-text { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.95); text-transform: uppercase; letter-spacing: 3px; animation: pulseBlink 1.5s infinite; text-shadow: 0 0 15px rgba(255, 50, 50, 0.9); }
 @keyframes pulseBlink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
@@ -94,7 +114,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .tech-header { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: #64c8ff; letter-spacing: 4px; font-weight: 700; border-bottom: 2px dashed rgba(100, 200, 255, 0.3); padding-bottom: 12px; margin-bottom: 25px; text-shadow: 0 0 15px rgba(100,200,255,0.5); width: 100%; text-transform: uppercase; text-align: center;}
 .warning-header { color: #ff4757; border-color: rgba(255,71,87,0.3); text-shadow: 0 0 15px rgba(255,71,87,0.5);}
 .success-header { color: #00ff41; border-color: rgba(0,255,65,0.3); text-shadow: 0 0 15px rgba(0,255,65,0.5);}
-.dialogue-container { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 4px; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5); width: 100%;}
+.dialogue-container { background: rgba(0,0,0,0.4); padding: 20px; box-sizing: border-box; border-radius: 4px; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5); width: 100%;}
 .caleb-text { font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; font-weight: 400; color: #f0f4f8; text-align: left; }
 .terminal-text { font-family: monospace; color: #00ff41; margin: 5px 0; text-align: center;}
 .glitch-title { font-size: 2rem; margin-bottom: 15px; text-shadow: 0 0 25px #00ff41; font-weight: bold;}
@@ -163,7 +183,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 /* =========================================
    PHASE 6: THE LETTER & PILLS
    ========================================= */
-.letter-container { width: 100%; padding: 10px; margin-bottom: 20px; }
+.letter-container { width: 100%; padding: 10px; box-sizing: border-box; margin-bottom: 20px; }
 .letter-line { font-family: 'Cinzel', serif; font-size: 1.15rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.4); line-height: 1.6; text-align: center; margin-bottom: 15px; opacity: 0; transform: translateY(15px); transition: all 1.2s ease; }
 .letter-line.visible { opacity: 1; transform: translateY(0); }
 
@@ -220,7 +240,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .finale-content { text-align: center; animation: floatContent 6s ease-in-out infinite; width: 100%;}
 .neon-cursive { font-family: 'Great Vibes', cursive; font-size: 4rem; color: #fff; text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #82c8ff, 0 0 80px #82c8ff; margin: 0 0 20px 0; line-height: 1.2; }
 .neon-sub { font-family: 'Inter', sans-serif; font-size: 1rem; letter-spacing: 8px; color: #a0c8ff; margin-bottom: 50px; text-transform: uppercase; font-weight: 500; text-shadow: 0 0 10px rgba(160,200,255,0.5);}
-.galaxy-btn { padding: 18px 30px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.4); border-radius: 4px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; box-shadow: inset 2px 2px 0px rgba(255,255,255,0.1), inset -2px -2px 0px rgba(0,0,0,0.5), 0 0 20px rgba(130,200,255,0.2); cursor: pointer; transition: all 0.3s; backdrop-filter: blur(5px);}
+.galaxy-btn { padding: 18px 30px; box-sizing: border-box; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.4); border-radius: 4px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; box-shadow: inset 2px 2px 0px rgba(255,255,255,0.1), inset -2px -2px 0px rgba(0,0,0,0.5), 0 0 20px rgba(130,200,255,0.2); cursor: pointer; transition: all 0.3s; backdrop-filter: blur(5px);}
 .galaxy-btn:active { transform: translateY(2px) scale(0.95); background: rgba(255,255,255,0.15);}
 
 /* =========================================
@@ -243,7 +263,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px;
 .initiate-btn:active { transform: scale(0.97); background: rgba(255, 159, 67, 0.4); }
 
 /* --- THE CONTAINED LOCKDOWN OVERLAY --- */
-.lockdown-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 0, 0, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+.lockdown-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 0, 0, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; border-radius: 2px;}
 .lockdown-overlay.active { opacity: 1; pointer-events: auto; }
 .lockdown-icon { font-size: 4rem; color: #ff4d4d; margin-bottom: 20px; animation: pulseBlink 1.5s infinite; text-shadow: 0 0 20px #ff4d4d; }
 .lockdown-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 5px; color: #fff; margin: 0 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); text-align: center;}
