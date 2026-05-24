@@ -317,7 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const quizQuestion = document.getElementById('quiz-question');
   const quizOptionsBox = document.getElementById('quiz-options');
   const tauntBox = document.getElementById('taunt-message');
-  const taunts = ["Try again, Mini. Keep your eyes on me.", "Wrong. Are you even trying?", "Not quite, sweetheart."];
+  
+  // Custom Caleb Taunts
+  const taunts = [
+      "Sylus wouldn't know that. But I do. Try again.", 
+      "Wrong. Stop thinking about him and focus on me.", 
+      "Is that what Sylus would do? I don't think so."
+  ];
 
   function loadQuestion() {
     if (!quizProgress || !quizQuestion || !quizOptionsBox) return;
@@ -462,8 +468,8 @@ document.addEventListener('DOMContentLoaded', () => {
     syncTimer = setInterval(() => {
       textStage++;
       if(textStage === 1) { text1.innerText = "A simulation can only mimic danger, Mini."; text1.classList.add('visible'); } 
-      else if (textStage === 2) { text2.innerText = "It can't feel your pulse race or your breath catch. But I can."; text2.classList.add('visible'); } 
-      else if (textStage === 3) { text3.innerText = "Simulation terminated. You're mine now."; text3.classList.add('visible'); } 
+      else if (textStage === 2) { text2.innerText = "Sylus can't feel it when your pulse races. But I can."; text2.classList.add('visible'); } 
+      else if (textStage === 3) { text3.innerText = "Simulation terminated. You belong to me tonight."; text3.classList.add('visible'); } 
       else if (textStage === 5) {
         clearInterval(syncTimer);
         advancePhase(); // Go to Anniversary Letter
@@ -526,14 +532,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (color === 'red') {
           blue.classList.add('burst');
           setTimeout(() => blue.classList.add('hidden'), 500);
-          question.innerText = "If you got a chance to go back to your past (2019), would you find me and start it all over?";
+          question.innerText = "If you had to permanently delete Sylus's game right now to spend this anniversary with me, would you?";
           popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 30px 60px rgba(255, 77, 77, 0.4)";
           question.style.color = "#ff4d4d";
           question.style.textShadow = "0 0 15px rgba(255, 77, 77, 0.6)";
       } else {
           red.classList.add('burst');
           setTimeout(() => red.classList.add('hidden'), 500);
-          question.innerText = "If you were given the chance to do something for me, what's the biggest thing you would do?";
+          question.innerText = "If you were given the chance to show me I'm better than any fictional character, what's the first thing you'd do?";
           popup.style.boxShadow = "inset 4px 4px 0px rgba(0,0,0,0.5), 0 30px 60px rgba(100, 200, 255, 0.4)";
           question.style.color = "#64c8ff";
           question.style.textShadow = "0 0 15px rgba(100, 200, 255, 0.6)";
