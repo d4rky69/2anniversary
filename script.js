@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const crowsContainer = document.getElementById('crows-container');
   const calebBgElements = document.getElementById('caleb-bg-elements');
   const lockdownOverlay = document.getElementById('lockdown-overlay');
+  const purgeOverlay = document.getElementById('purge-overlay');
   
   // Audio Elements
   const bgMusic = document.getElementById('bg-music');
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const playPauseBtn = document.getElementById('play-pause-btn');
   let musicStarted = false; 
 
-  // Startup Screen Logic (Safeguarded against crashes if you remove it from HTML)
+  // Startup Screen Logic
   const startupScreen = document.getElementById('startup-screen');
   const startBtn = document.getElementById('start-btn');
 
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 0. GLOBAL UI & NAVIGATION ---
   document.addEventListener('pointerdown', (e) => {
-    // If startup screen doesn't exist, try to play audio on first tap anywhere
+    // Autoplay fallback
     if (!startupScreen && !musicStarted && bgMusic) {
         bgMusic.play().catch(e => console.log("Browser blocked autoplay."));
         if(cdPlayer) cdPlayer.classList.remove('paused');
@@ -555,12 +556,77 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isExpanded) card.classList.add('expanded');
   };
 
+  // --- THE MIXED PURGE & PROP HUNT LOGIC ---
+  const btnPurge = document.getElementById('btn-purge');
+  const purgeProgressBar = document.getElementById('purge-progress-bar');
+  const purgeProgressText = document.getElementById('purge-progress-text');
+  const purgeTaunt = document.getElementById('purge-taunt');
+
+  let purgeInterval;
+  let purgeProgress = 0;
+
+  function startPurge(e) {
+      e.preventDefault();
+      purgeTaunt.classList.remove('hidden');
+      purgeTaunt.innerText = "Deleting Sylus.chr...";
+      purgeTaunt.style.color = "#ff4d4d";
+
+      purgeInterval = setInterval(() => {
+          purgeProgress += 2; // Fills up in about 2.5 seconds
+          if(purgeProgress >= 100) {
+              purgeProgress = 100;
+              completePurge();
+          }
+          purgeProgressBar.style.width = purgeProgress + "%";
+          purgeProgressText.innerText = Math.floor(purgeProgress) + "%";
+      }, 50);
+  }
+
+  function stopPurge() {
+      clearInterval(purgeInterval);
+      if (purgeProgress < 100) {
+          purgeProgress = 0;
+          purgeProgressBar.style.width = "0%";
+          purgeProgressText.innerText = "0%";
+          purgeTaunt.innerText = "Don't let go, Mini. You have to commit.";
+          purgeTaunt.style.color = "#aaa";
+      }
+  }
+
+  function completePurge() {
+      clearInterval(purgeInterval);
+      btnPurge.innerText = "PURGED SUCCESSFULLY";
+      btnPurge.style.background = "rgba(0, 255, 65, 0.2)";
+      btnPurge.style.borderColor = "#00ff41";
+      btnPurge.style.color = "#00ff41";
+      purgeTaunt.innerText = "Good girl.";
+      purgeTaunt.style.color = "#00ff41";
+
+      // Wait a moment so she can read "Good girl", then trigger the final lockdown
+      setTimeout(() => {
+          purgeOverlay.classList.remove('active');
+          setTimeout(() => purgeOverlay.classList.add('hidden'), 500);
+
+          if(lockdownOverlay) {
+              lockdownOverlay.classList.remove('hidden');
+              setTimeout(() => { lockdownOverlay.classList.add('active'); }, 50);
+          }
+      }, 1800);
+  }
+
+  if (btnPurge) {
+      btnPurge.addEventListener('pointerdown', startPurge);
+      btnPurge.addEventListener('pointerup', stopPurge);
+      btnPurge.addEventListener('pointerleave', stopPurge);
+  }
+
+  // When a protocol is selected, show the Purge screen instead of the direct lockdown
   document.querySelectorAll('.initiate-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation(); 
-      if(lockdownOverlay) {
-          lockdownOverlay.classList.remove('hidden');
-          setTimeout(() => { lockdownOverlay.classList.add('active'); }, 50);
+      if(purgeOverlay) {
+          purgeOverlay.classList.remove('hidden');
+          setTimeout(() => { purgeOverlay.classList.add('active'); }, 50);
       }
     });
   });
